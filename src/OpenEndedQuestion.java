@@ -1,3 +1,5 @@
+import com.lowagie.text.Paragraph;
+
 
 public class OpenEndedQuestion extends Question {
 	
@@ -19,9 +21,9 @@ public class OpenEndedQuestion extends Question {
 	}
 
 	@Override
-	public void generateFormattedPDFSection() {
+	public Paragraph[] generateFormattedPDFSection() {
 		// TODO Auto-generated method stub
-		
+		return null;		
 	}
 
 }

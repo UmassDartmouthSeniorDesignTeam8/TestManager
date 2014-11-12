@@ -1,4 +1,6 @@
-import com.itextpdf.text.Section;
+import java.util.ArrayList;
+
+import com.lowagie.text.Paragraph;
 
 
 public class MultipleChoiceQuestion extends Question {
@@ -48,8 +50,20 @@ public class MultipleChoiceQuestion extends Question {
 		return false;
 	}
 	
-	public void generateFormattedPDFSection(){
-		
+	public Paragraph[] generateFormattedPDFSection(){
+		ArrayList<Paragraph> ps = new ArrayList<Paragraph>();
+		ps.add(new Paragraph(this.getQuestionText() + " (" + this.getPointValue() + " points)"));
+		for (int i=0; i<choices.length; i++){
+			Paragraph current = new Paragraph((char)('A'+i) + ". " + choices[1]);
+			current.setIndentationLeft(50);
+			current.setSpacingBefore(0);
+			current.setSpacingAfter(0);
+			ps.add(current);
+		}
+		Paragraph[] paragraphs = new Paragraph[ps.size()];
+		for (int i=0; i<paragraphs.length; i++)
+			paragraphs[i]=ps.get(i);
+		return paragraphs;
 	}
 
 }
