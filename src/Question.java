@@ -17,7 +17,9 @@ public abstract class Question implements Serializable{
 	
 	public abstract boolean isManuallyGraded();
 	
-	public abstract Paragraph[] generateFormattedPDFSection();
+	protected abstract void generateFormattedPDFSection();
+	
+	public abstract Paragraph[] getFormattedPDFSection();
 	
 	public int getPointValue() {
 		return pointValue;

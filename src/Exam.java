@@ -71,18 +71,15 @@ public class Exam implements Serializable{
             PdfWriter.getInstance(document,
                 new FileOutputStream(filepath));            
             
-            //HeaderFooter header = new HeaderFooter(new Phrase(course.getName() + " - " + name + " - " + " - " + 
-            //	course.getTerm()), false);
-            HeaderFooter header = new HeaderFooter(new Phrase("TEXT"), false);
+            HeaderFooter header = new HeaderFooter(new Phrase(course.getName() + " - " + this.name + " - " + course.getTerm()), false);
             header.setAlignment(Element.ALIGN_CENTER);
-            System.out.println(header);
             
             document.setHeader(header);
             
             document.open();
             
             for (Question q: questions){
-            	Paragraph[] toAdd = q.generateFormattedPDFSection();
+            	Paragraph[] toAdd = q.getFormattedPDFSection();
             	for (Paragraph p:toAdd){
             		document.add(p);   
             	}

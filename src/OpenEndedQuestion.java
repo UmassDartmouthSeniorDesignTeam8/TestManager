@@ -21,9 +21,13 @@ public class OpenEndedQuestion extends Question {
 	}
 
 	@Override
-	public Paragraph[] generateFormattedPDFSection() {
-		// TODO Auto-generated method stub
-		return null;		
+	public void generateFormattedPDFSection() {
+		// TODO Auto-generated method stub		
+	}
+	
+	public Paragraph[] getFormattedPDFSection(){
+		// TODO
+		return null;
 	}
 
 }
