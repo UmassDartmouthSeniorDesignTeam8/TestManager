@@ -25,18 +25,20 @@ public class runner {
 	}
 	*/
 	
-	public static void main(String args[]){
+	public static void main(String args[]) throws Exception{
 		
-		String PATH = "IMAG1152.jpg";
+		String PATH = "input5.png";
 		String[] results;
 		
 		File imageFile = new File(PATH);
 		try{
+			//BufferedImage image = PDFtoImage.convert(new File("input.pdf"));
 			BufferedImage image = ImageIO.read(imageFile);
 			results = QRCodeHandler.readAllCodes(image);
 			for (String r: results){
 				System.out.println(r);
 			}
+			System.out.println(results.length + " barcodes detected.");
 		} catch (IOException e){
 			System.out.println(e.getMessage());
 			e.printStackTrace();
