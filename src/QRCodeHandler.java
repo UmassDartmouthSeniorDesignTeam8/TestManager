@@ -48,6 +48,7 @@ public class QRCodeHandler {
         return resultStrings;        
 	}
 	
+	
 	public static boolean GenerateQRCode(String imagepath, String contents, int size){
 		try{
 			QRCodeWriter writer = new QRCodeWriter();
