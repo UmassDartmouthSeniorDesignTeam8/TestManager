@@ -22,8 +22,7 @@ public abstract class Question implements Serializable {
 	private int quest_id;
 	private String answer;
 
-	public Question(int quest_id, String questionText, String answer,
-			int pointValue) {
+	public Question(String questionText, int pointValue) {
 		super();
 		this.quest_id = quest_id;
 		this.questionText = questionText;

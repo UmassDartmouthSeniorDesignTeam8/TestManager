@@ -10,7 +10,6 @@ import java.util.Date;
 
 import javax.swing.JOptionPane;
 
-import com.itextpdf.text.pdf.qrcode.BitMatrix;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfWriter;
 
@@ -26,12 +25,12 @@ public class Exam implements Serializable {
 	private static final int SIZE = 25;
 
 	public Exam(String name, Date date, String coverPageInstructions,
-			int course_id) {
+			Course course) {
 		super();
 		this.name = name;
 		this.date = date;
 		this.coverPageInstructions = coverPageInstructions;
-		this.course_id = course_id;
+		this.course = course;
 		questions = new ArrayList<Question>();
 	}
 
