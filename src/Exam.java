@@ -25,13 +25,6 @@ public class Exam implements Serializable {
 	private int index = 0;
 	private static final int SIZE = 25;
 
-	/*
-	 * for the database, which I didn't its name so I guessed and named it
-	 * OrionDB
-	 */
-	public final String DB_URL = "jdbc:derby:OrionDB.derby";
-	private Connection conn;
-
 	public Exam(String name, Date date, String coverPageInstructions,
 			int course_id) {
 		super();
@@ -74,41 +67,7 @@ public class Exam implements Serializable {
 		this.course = course;
 	}
 
-	public static Exam getExam(int class_id, int test_id) {
-
-		getDatabaseConnection();
-		Statement stmt = conn.createStatement();
-		ResultSet resultSet = stmt
-				.executeQuery("select exam_name, course_id , coverpageins, date from test where test_id = '"
-						+ test_id + "' and class-id = '" + class_id + "'");
-		String exam_name = resultSet.getString(0);
-		int course_id = resultSet.getInt(1);
-		String coverpageins = resultSet.getString(2);
-		Date date = resultSet.getDate(3);
-
-		Exam ret = new Exam(exam_name, date, coverpageins, course_id);
-		for (Question q : Question.getQuestions(test_id)) {
-			ret.addQuestion(q);
-		}
-	}
-
-	private void getDatabaseConnection() {
-		try {
-			String sDriverName = "org.derby.JDBC";
-			Class.forName(sDriverName);
-
-			conn = DriverManager.getConnection(DB_URL);
-		}
-
-		catch (Exception ex) {
-			ex.printStackTrace();
-			System.exit(0);
-		}
-
-	}
-	
 	public void addQuestion(Question q) {
-
 		questions.add(q);
 		/* to get the index of the question */
 		String in = Integer.toString(questions.size() - 1);
