@@ -32,6 +32,7 @@ public class DatabaseImporter {
 
 	}
 	
+	/*goes through and gets the questions*/
 	public static Collection<Question> getQuestions(int test_id) {
 		ArrayList<Question> questions = new ArrayList<Question>();
 
@@ -54,6 +55,7 @@ public class DatabaseImporter {
 		return questions;
 	}
 
+	/*goes and gets entire exams*/
 	public static Exam getExam(int class_id, int test_id) {
 
 		getDatabaseConnection();
