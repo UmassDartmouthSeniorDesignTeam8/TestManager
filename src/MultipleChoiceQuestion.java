@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 
-import com.lowagie.text.Paragraph;
-
 
 public class MultipleChoiceQuestion extends Question {
 	
@@ -9,7 +7,7 @@ public class MultipleChoiceQuestion extends Question {
 	public final int MAX_RESPONSES = 10;
 	private String choices[];
 	private int correctChoice;
-	private Paragraph[] pdfSection;
+
 	
 	/**
 	 * 
@@ -28,7 +26,6 @@ public class MultipleChoiceQuestion extends Question {
 		else {
 			this.choices = choices;
 			this.correctChoice = correctChoice;
-			this.pdfSection = null;
 		}
 	}
 	
@@ -50,27 +47,6 @@ public class MultipleChoiceQuestion extends Question {
 	@Override
 	public boolean isManuallyGraded() {
 		return false;
-	}
-	
-	public void generateFormattedPDFSection(){
-		ArrayList<Paragraph> ps = new ArrayList<Paragraph>();
-		ps.add(new Paragraph(this.getQuestionText() + " (" + this.getPointValue() + " points)"));
-		for (int i=0; i<choices.length; i++){
-			Paragraph current = new Paragraph((char)('A'+i) + ". " + choices[i]);
-			current.setIndentationLeft(50);
-			current.setSpacingBefore(0);
-			current.setSpacingAfter(0);
-			ps.add(current);
-		}
-		pdfSection = new Paragraph[ps.size()];
-		for (int i=0; i<pdfSection.length; i++)
-			pdfSection[i]=ps.get(i);
-	}
-	
-	public Paragraph[] getFormattedPDFSection(){
-		if (pdfSection == null)
-			generateFormattedPDFSection();
-		return pdfSection;
 	}
 
 }

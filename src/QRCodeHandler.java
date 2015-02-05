@@ -15,10 +15,9 @@ import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.datamatrix.DataMatrixWriter;
 import com.google.zxing.multi.qrcode.QRCodeMultiReader;
+import com.google.zxing.oned.Code128Writer;
 import com.google.zxing.qrcode.QRCodeWriter;
-import com.google.zxing.qrcode.encoder.QRCode;
 
 
 public class QRCodeHandler {
@@ -57,6 +56,19 @@ public class QRCodeHandler {
 			MatrixToImageWriter.writeToPath(image, "GIF", Paths.get(imagepath));
 			return true;
 		} catch (Exception e){
+		 return false;
+		} 		
+	}
+	
+	public static boolean GenerateBarCode(String imagepath, String contents, int size){
+		try{
+			Code128Writer writer = new Code128Writer();
+			BitMatrix image = writer.encode(contents, BarcodeFormat.CODE_128, 50, 25);
+			
+			MatrixToImageWriter.writeToPath(image, "GIF", Paths.get(imagepath));
+			return true;
+		} catch (Exception e){
+			System.out.println(e.getMessage());
 		 return false;
 		} 		
 	}

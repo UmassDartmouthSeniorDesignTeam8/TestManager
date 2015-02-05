@@ -1,6 +1,3 @@
-import com.lowagie.text.Paragraph;
-
-
 public class OpenEndedQuestion extends Question {
 	
 	private static final long serialVersionUID = 8114689309779362118L;
@@ -18,16 +15,6 @@ public class OpenEndedQuestion extends Question {
 	
 	public String getSampleResponse(){
 		return sampleResponse;
-	}
-
-	@Override
-	public void generateFormattedPDFSection() {
-		// TODO Auto-generated method stub		
-	}
-	
-	public Paragraph[] getFormattedPDFSection(){
-		// TODO
-		return null;
 	}
 
 }
