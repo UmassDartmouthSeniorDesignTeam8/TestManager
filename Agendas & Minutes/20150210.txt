@@ -1,0 +1,21 @@
+2/10/15
+
+Alyssa, Caitlyn & Shawn
+
+Progress:
+- determined functional QR code side - fairly large but will be used to test additional functionality
+
+PDF Reader class:
+- will read all the pages of a PDF document
+- will be responsible for identifying all read QR codes and interpreting: the exam id, exam version (ordering) id, the question number, and the answer number, and software generation version info
+- classes will be generated that will create and identify those necessary elements of the qr code
+- organization of the string's QR code will be the following format:
+	v#####e#####s#####q###a## where e precedes the exam id, s precedes the student id (or ordering number), q precedes the question number, a precedes the answer number and v precedes the software version and all numerics are not fixed length
+- Alyssa will do
+
+Shawn:
+- will create process flow model for all essentially mapped functions to show how everything will interact at a basic level
+
+Caitlyn:
+- will continue to work on integrating questions being read from the database
+

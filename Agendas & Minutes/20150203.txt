@@ -1,0 +1,14 @@
+Meeting Minutes
+2/3/15
+
+Attending: Alyssa, Caitlyn & Shawn
+
+Progress Over Break:
+Caitlyn completed the database import routine
+Nobody else achieved any progress
+
+Current goals:
+Proceed with original plan utilizing individualized QR codes for each response
+Implement procedure to create and print physical exam
+Implement procedure to score scanned exams
+Create functional, command-line based exam functionality in lieu of web ui and database
