@@ -1,10 +1,14 @@
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class DatabaseImporter {
@@ -13,16 +17,28 @@ public class DatabaseImporter {
 	 * for the database, which I didn't its name so I guessed and named it
 	 * OrionDB
 	 */
-	public final String DB_URL = "jdbc:derby:OrionDB.derby";
-	private Connection conn;
+
+	public final static String DB_URL = "jdbc:mysql://cobbsoft_ORION/cobbsoftwaresystems.com";
+	public final static String USER = "cobbsoft";
+	public final static String PASS = "Infinite=12345";
+	
+	private static Connection conn;
 	
 	//gets connected to the database
-	private void getDatabaseConnection() {
+	private static void getDatabaseConnection() {
+				
 		try {
-			String sDriverName = "org.derby.JDBC";
+			
+			System.out.println("getting connection"); //debugging
+			
+			String sDriverName = "com.mysql.jdbc.Driver";
 			Class.forName(sDriverName);
 
-			conn = DriverManager.getConnection(DB_URL);
+			System.out.println("gets to conn"); //debugging
+			
+			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+			
+			System.out.println("Connection succsefull"); //debugging
 		}
 
 		catch (Exception ex) {
@@ -33,13 +49,16 @@ public class DatabaseImporter {
 	}
 	
 	/*goes through and gets the questions*/
-	public static Collection<Question> getQuestions(int test_id) {
+	public static Collection<Question> getQuestions(int test_id) throws SQLException {
+		
+		System.out.println("in getQuestions"); //debugging
+		
+		
 		ArrayList<Question> questions = new ArrayList<Question>();
 
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
-		ResultSet resultSet = stmt
-				.executeQuery("select quest_id, question_text, answer, pointValue from questions  where test-id = '"
+		ResultSet resultSet = stmt.executeQuery("select quest_id, question_text, answer, pointValue from questions  where test-id = '"
 						+ test_id + "'");
 		//read in from the database
 		while (resultSet.next()) {
@@ -48,17 +67,21 @@ public class DatabaseImporter {
 			String answer = resultSet.getString(2);
 			int pointValue = resultSet.getInt(3);
 			//add a question
-			questions.add(new Question(quest_id, question_text, answer,
-					pointValue));
+			System.out.println(quest_id);
+			System.out.println(question_text);
+			System.out.println(answer);
+			System.out.println(pointValue);
+
+		//questions.add(new Question(quest_id, question_text, answer, pointValue));
 		}
 
 		return questions;
 	}
 
 	/*goes and gets entire exams*/
-	public static Exam getExam(int class_id, int test_id) {
+	public static Exam getExam(int class_id, int test_id) throws SQLException {
 
-		getDatabaseConnection();
+		//getDatabaseConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet resultSet = stmt
 				.executeQuery("select exam_name, course_id , coverpageins, date from test where test_id = '"
@@ -68,13 +91,26 @@ public class DatabaseImporter {
 		String coverpageins = resultSet.getString(2);
 		Date date = resultSet.getDate(3);
 
-		Exam ret = new Exam(exam_name, date, coverpageins, course_id);
-		for (Question q : Question.getQuestions(test_id)) {
-			ret.addQuestion(q);
-		}
+		//Exam ret = new Exam(exam_name, date, coverpageins, course_id);
+		//for (Question q : Question.getQuestions(test_id)) {
+		//	ret.addQuestion(q);
+		//}
+		
+		return null;
 	}
 
 	
+	public static void main(String args[]) throws SQLException {
+
+		DatabaseImporter di= new DatabaseImporter();
+		
+		System.out.println("calling get questions");
+
+		di.getQuestions(0);
+
+	}
+	
+}	
 	
 	
 	
@@ -85,7 +121,4 @@ public class DatabaseImporter {
 	
 	
 	
-	
-	
-	
-}
+
