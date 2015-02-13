@@ -18,35 +18,50 @@ public class DatabaseImporter {
 	 * OrionDB
 	 */
 
-	public final static String DB_URL = "jdbc:mysql://cobbsoft_ORION/cobbsoftwaresystems.com";
-	public final static String USER = "cobbsoft";
-	public final static String PASS = "Infinite=12345";
-	
+//	public final static String DB_URL = "http://cobbsoftwaresystems.com/cobbsoft_orion";
+//	public final static String USER = "cobbsoft";
+//	public final static String PASS = "Infinite=12345";
+//	
 	private static Connection conn;
 	
 	//gets connected to the database
 	private static void getDatabaseConnection() {
+			String url = "jdbc:mysql://50.87.248.81:3306/"; 
+			String dbName = "cobbsoft_orion"; 
+			String driver = "com.mysql.jdbc.Driver"; 
+			String userName = "cobbsoft"; 
+			String password = "Infinite=12345"; 
+		
+			try { 
 				
-		try {
+				Class.forName(driver); 
+				conn = DriverManager.getConnection(url+dbName,userName,password);
+				
+				} catch (Exception e) { 
+					System.out.println("ERROR CONNECTING!");
+					e.printStackTrace(); 
+				} 
 			
-			System.out.println("getting connection"); //debugging
-			
-			String sDriverName = "com.mysql.jdbc.Driver";
-			Class.forName(sDriverName);
-
-			System.out.println("gets to conn"); //debugging
-			
-			conn = DriverManager.getConnection(DB_URL, USER, PASS);
-			
-			System.out.println("Connection succsefull"); //debugging
-		}
-
-		catch (Exception ex) {
-			ex.printStackTrace();
-			System.exit(0);
-		}
-
-	}
+	} 
+//				
+//		try {
+//			
+//			System.out.println("getting connection"); //debugging
+//			
+//			String sDriverName = "com.mysql.jdbc.Driver";
+//			Class.forName(sDriverName);
+//
+//			System.out.println("gets to conn"); //debugging
+//			
+//			conn = DriverManager.getConnection(DB_URL, USER, PASS);
+//			
+//			System.out.println("Connection succsefull"); //debugging
+//		}
+//
+//		catch (Exception ex) {
+//			ex.printStackTrace();
+//			System.exit(0);
+//		}
 	
 	/*goes through and gets the questions*/
 	public static Collection<Question> getQuestions(int test_id) throws SQLException {
