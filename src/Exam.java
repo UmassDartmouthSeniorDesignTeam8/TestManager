@@ -18,9 +18,8 @@ public class Exam implements Serializable {
 	private String coverPageInstructions;
 	private Course course;
 	private ArrayList<Question> questions;
-	private int index = 0;
-	private static final int SIZE = 25;
-
+	private int examID;
+	
 	public Exam(String name, Date date, String coverPageInstructions,
 			Course course) {
 		super();
@@ -45,6 +44,14 @@ public class Exam implements Serializable {
 
 	public Course getCourse() {
 		return course;
+	}
+	
+	public int getExamID(){
+		return examID;
+	}
+	
+	public Question[] getQuestionArray(){
+		return (Question[])questions.toArray();
 	}
 
 	public void setName(String name) {

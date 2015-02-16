@@ -43,6 +43,10 @@ public class MultipleChoiceQuestion extends Question {
 	public String[] getChoices(){
 		return choices;
 	}
+	
+	public int getNumChoices(){
+		return choices.length;
+	}
 
 	@Override
 	public boolean isManuallyGraded() {

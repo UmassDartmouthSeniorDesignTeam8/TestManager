@@ -60,6 +60,15 @@ public class QRCodeHandler {
 		} 		
 	}
 	
+	/*
+	 * Generates a unique QR code that fully encodes all aspects of a multiple choice response.
+	 */
+	public static boolean generateQRCode(String version, int exam, int student, int question,
+			int response, String filePath, int size){
+		String toEncode = "v" + version + "e" + exam + "s" + student + "q" + question + "r" + response;
+		return GenerateQRCode(filePath, toEncode, size);
+	}
+	
 	public static boolean GenerateBarCode(String imagepath, String contents, int size){
 		try{
 			Code128Writer writer = new Code128Writer();

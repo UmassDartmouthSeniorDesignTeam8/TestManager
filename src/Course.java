@@ -25,6 +25,10 @@ public class Course implements Serializable{
 	public String getTerm() {
 		return term;
 	}
+	
+	public int getNumStudents(){
+		return students.size();
+	}
 
 	public void setName(String name) {
 		this.name = name;
