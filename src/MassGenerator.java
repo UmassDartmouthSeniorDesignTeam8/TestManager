@@ -10,14 +10,19 @@ import javax.imageio.ImageIO;
 public class MassGenerator {
 	
 	public static void main(String args[]) throws FileNotFoundException{
-		int i = 0;
-		for (int student =0; student<5; student++)
-			for (int q=0; q<6; q++)
-					for (int r=0; r<5; r++)
-							QRCodeHandler.GenerateQRCode(i++ + ".gif", "v0e1s"+student+"q"+q+"a"+r +"", 58);
+//		long startime = System.currentTimeMillis();
+//		int i = 0;
+//		for (int student =0; student<100; student++)
+//			for (int q=0; q<100; q++)
+//					for (int r=0; r<5; r++)
+//							QRCodeHandler.generateQRCode("1", 215, student, q, r, 58);
+//	
+//		long endTime = System.currentTimeMillis();
+//		System.out.println(endTime-startime);
+		
 			
-		testCreation("");
-	testLoad("58pxwrite.bmp");
+		//testCreation("");
+	testLoad("40test.bmp");
 
 	}
 	

@@ -69,6 +69,12 @@ public class QRCodeHandler {
 		return GenerateQRCode(filePath, toEncode, size);
 	}
 	
+	public static boolean generateQRCode(String version, int exam, int student, int question,
+			int response, int size){
+		String toEncode = "v" + version + "e" + exam + "s" + student + "q" + question + "r" + response;
+		return generateQRCode(version, exam, student, question, response, toEncode + ".gif", size);
+	}
+	
 	public static boolean GenerateBarCode(String imagepath, String contents, int size){
 		try{
 			Code128Writer writer = new Code128Writer();
