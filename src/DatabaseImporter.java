@@ -70,23 +70,40 @@ public class DatabaseImporter {
 		
 		
 		ArrayList<Question> questions = new ArrayList<Question>();
-
+		
+		System.out.println("getting connection"); //debugging
+		
 		getDatabaseConnection();
+		
+		System.out.println("got connection; creating stmt");
+		
 		Statement stmt = conn.createStatement();
-		ResultSet resultSet = stmt.executeQuery("select quest_id, question_text, answer, pointValue from questions  where test-id = '"
+		
+		System.out.println("about to query"); //debugging		
+		
+		ResultSet resultSet = stmt.executeQuery("select question_id, test_id, question_text, answer_id, question_type, point_value from questions  where test_id = '"
 						+ test_id + "'");
+		
+		System.out.println("did the query");
 		//read in from the database
 		while (resultSet.next()) {
-			int quest_id = resultSet.getInt(0);
-			String question_text = resultSet.getString(1);
-			String answer = resultSet.getString(2);
-			int pointValue = resultSet.getInt(3);
+			System.out.println("setting info from the db");
+			int question_id = resultSet.getInt(1);
+			int testId = resultSet.getInt(2);			//duplicate variable if names test_id
+			String question_text = resultSet.getString(3);
+			int answer_id = resultSet.getInt(4);
+			String question_type = resultSet.getString(5);
+			int point_value = resultSet.getInt(6);
 			//add a question
-			System.out.println(quest_id);
+			
+			System.out.println("showing the info");
+			
+			System.out.println(question_id);
+			System.out.println(testId);
 			System.out.println(question_text);
-			System.out.println(answer);
-			System.out.println(pointValue);
-
+			System.out.println(question_type);
+			System.out.println(point_value);
+			
 		//questions.add(new Question(quest_id, question_text, answer, pointValue));
 		}
 
@@ -121,7 +138,7 @@ public class DatabaseImporter {
 		
 		System.out.println("calling get questions");
 
-		di.getQuestions(0);
+		di.getQuestions(1);
 
 	}
 	
