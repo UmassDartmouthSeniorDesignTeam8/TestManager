@@ -53,6 +53,10 @@ public class Exam implements Serializable {
 	public Question[] getQuestionArray(){
 		return (Question[])questions.toArray();
 	}
+	
+	public int getNumQuestions(){
+		return questions.size();
+	}
 
 	public void setName(String name) {
 		this.name = name;
