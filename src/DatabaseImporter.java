@@ -18,10 +18,6 @@ public class DatabaseImporter {
 	 * OrionDB
 	 */
 
-//	public final static String DB_URL = "http://cobbsoftwaresystems.com/cobbsoft_orion";
-//	public final static String USER = "cobbsoft";
-//	public final static String PASS = "Infinite=12345";
-//	
 	private static Connection conn;
 	
 	//gets connected to the database
@@ -43,114 +39,109 @@ public class DatabaseImporter {
 				} 
 			
 	} 
-//				
-//		try {
-//			
-//			System.out.println("getting connection"); //debugging
-//			
-//			String sDriverName = "com.mysql.jdbc.Driver";
-//			Class.forName(sDriverName);
-//
-//			System.out.println("gets to conn"); //debugging
-//			
-//			conn = DriverManager.getConnection(DB_URL, USER, PASS);
-//			
-//			System.out.println("Connection succsefull"); //debugging
-//		}
-//
-//		catch (Exception ex) {
-//			ex.printStackTrace();
-//			System.exit(0);
-//		}
 	
 	/*goes through and gets the questions*/
 	public static Collection<Question> getQuestions(int test_id) throws SQLException {
 		
-		System.out.println("in getQuestions"); //debugging
-		
-		
 		ArrayList<Question> questions = new ArrayList<Question>();
-		
-		System.out.println("getting connection"); //debugging
-		
 		getDatabaseConnection();
-		
-		System.out.println("got connection; creating stmt");
-		
 		Statement stmt = conn.createStatement();
-		
-		System.out.println("about to query"); //debugging		
-		
-		ResultSet resultSet = stmt.executeQuery("select question_id, test_id, question_text, answer_id, question_type, point_value from questions  where test_id = '"
+		ResultSet resultSet = stmt.executeQuery("select question_id, test_id, question_text, question_type, point_value from questions  where test_id = '"
 						+ test_id + "'");
 		
-		System.out.println("did the query");
 		//read in from the database
 		while (resultSet.next()) {
 			System.out.println("setting info from the db");
 			int question_id = resultSet.getInt(1);
-			int testId = resultSet.getInt(2);			//duplicate variable if names test_id
+			int exam_id = resultSet.getInt(2);	
 			String question_text = resultSet.getString(3);
-			int answer_id = resultSet.getInt(4);
-			String question_type = resultSet.getString(5);
-			int point_value = resultSet.getInt(6);
+			int question_type = resultSet.getInt(4);
+			int point_value = resultSet.getInt(5);
 			//add a question
 			
-			System.out.println("showing the info");
-			
-			System.out.println(question_id);
-			System.out.println(testId);
-			System.out.println(question_text);
-			System.out.println(question_type);
-			System.out.println(point_value);
-			
-		//questions.add(new Question(quest_id, question_text, answer, pointValue));
-		}
+			if(question_type == 0){
+				questions.add(new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value));
+				System.out.println("added a multiple choice question"); // testing
+			}
+/*			else if(question_type == 3){
+				questions.add(new TrueOrFalseQuestion());
+			}
+			else{
+				questions.add(new OpenResponseQuestion());
+			}
+*/		}
 
 		return questions;
 	}
 
-	/*goes and gets entire exams*/
-	public static Exam getExam(int class_id, int test_id) throws SQLException {
+/*I do not believe this will be needed*/
+/*	public static Exam getExam(int class_id, int test_id) throws SQLException {
 
 		//getDatabaseConnection();
 		Statement stmt = conn.createStatement();
+		lines 104-106 were commented out
 		ResultSet resultSet = stmt
 				.executeQuery("select exam_name, course_id , coverpageins, date from test where test_id = '"
 						+ test_id + "' and class-id = '" + class_id + "'");
-		String exam_name = resultSet.getString(0);
-		int course_id = resultSet.getInt(1);
-		String coverpageins = resultSet.getString(2);
-		Date date = resultSet.getDate(3);
+		
+		ResultSet resultSet = stmt.executeQuery("select test_name, test_id, from tests where test_id = '"
+						+ test_id + "'");
+		String exam_name = resultSet.getString(1);
+		int exam_id = resultSet.getInt(2);
+		//int course_id = resultSet.getInt(1);
+		//String coverpageins = resultSet.getString(2);
+		//Date date = resultSet.getDate(3);
 
 		//Exam ret = new Exam(exam_name, date, coverpageins, course_id);
-		//for (Question q : Question.getQuestions(test_id)) {
-		//	ret.addQuestion(q);
-		//}
+		Exam ret = new Exam(exam_name, exam_id);
+		for (Question q : Exam.getQuestionArray(test_id)) {
+		ret.addQuestion(q);
+		}
 		
 		return null;
-	}
+	} */
 
+	public static ArrayList<Answer> getAnswers(int test_id) throws SQLException{
+		ArrayList<Answer> answers = new ArrayList<Answer>();
+		getDatabaseConnection();
+		Statement stmt = conn.createStatement();
+		//when is_answer is set to 1 that response will be added. 
+		ResultSet resultSet = stmt.executeQuery("SELECT r.question_id, response_text, answer_id FROM responses r, questions q WHERE  q.test_id = '"+ test_id+"' AND r.question_id = q.question_id AND r.is_answer = 1");
+		
+		//read in from the database
+		try {
+			while (resultSet.next()) {
+				System.out.println("setting info from the db");
+				int question_id = resultSet.getInt(1); 
+				String response_text = resultSet.getString(2);			
+				int response_id = resultSet.getInt(3);
+				Answer a = new Answer(question_id, response_text, response_id);
+				answers.add(a);
+				System.out.println(a.toString()); //here for debugging
+			}
+		} catch (SQLException e) {
+
+			System.out.println("Problem saving from DB");
+			e.printStackTrace();
+		}
+
+		return answers;
+		
+		
+		
+	}
+	
 	
 	public static void main(String args[]) throws SQLException {
 
 		DatabaseImporter di= new DatabaseImporter();
 		
-		System.out.println("calling get questions");
+		System.out.println("calling get getAnswers");
 
-		di.getQuestions(1);
-
+		ArrayList<Answer> answers = di.getAnswers(1);
+		for (Answer a : answers) {
+			System.out.println("Returned: " + a.toString());
+		}
 	}
 	
 }	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-

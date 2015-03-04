@@ -17,10 +17,11 @@ public class Exam implements Serializable {
 	private Date date;
 	private String coverPageInstructions;
 	private Course course;
-	private ArrayList<Question> questions;
-	private int examID;
+	private static ArrayList<Question> questions;
+	private int exam_id;
 	
-	public Exam(String name, Date date, String coverPageInstructions,
+	
+/*	public Exam(String name, Date date, String coverPageInstructions,
 			Course course) {
 		super();
 		this.name = name;
@@ -28,8 +29,16 @@ public class Exam implements Serializable {
 		this.coverPageInstructions = coverPageInstructions;
 		this.course = course;
 		questions = new ArrayList<Question>();
-	}
+	}*/
 
+	
+	public Exam(String name, int exam_id){
+		super();
+		this.name= name;
+		this.exam_id = exam_id;
+		
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -47,10 +56,10 @@ public class Exam implements Serializable {
 	}
 	
 	public int getExamID(){
-		return examID;
+		return exam_id;
 	}
 	
-	public Question[] getQuestionArray(){
+	public static Question[] getQuestionArray(int exam_id){
 		return (Question[])questions.toArray();
 	}
 	

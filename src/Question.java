@@ -3,46 +3,34 @@ import java.io.Serializable;
 public abstract class Question implements Serializable {
 
 	private static final long serialVersionUID = -8272622275712458557L;
-	private String questionText;
-	private int pointValue;
+	private String question_text;
+	private int point_value;
 
 	private int quest_id;
 	private String answer;
 
-	public Question(String questionText, int pointValue) {
-		this.questionText = questionText;
-		this.pointValue = pointValue;
+	public Question(String question_text, int point_value) {
+		this.question_text = question_text;
+		this.point_value = point_value;
 	}
 
 	public abstract boolean isManuallyGraded();
 
 	public int getPointValue() {
-		return pointValue;
+		return point_value;
 	}
 
 	public void setPointValue(int pointValue) {
-		this.pointValue = pointValue;
+		this.point_value = pointValue;
 	}
 
 	public String getQuestionText() {
-		return questionText;
+		return question_text;
 	}
 
 	public void setQuestionText(String questionText) {
-		this.questionText = questionText;
+		this.question_text = questionText;
 	}
 
-//	/* code taken from QRCodeHandler... */
-//	public void setQuestionQRCode(String imagepath, String contents, int size) {
-//		try {
-//			QRCodeWriter writer = new QRCodeWriter();
-//			BitMatrix image = writer.encode(contents, BarcodeFormat.QR_CODE,
-//					size, size);
-//
-//			MatrixToImageWriter.writeToPath(image, "GIF", Paths.get(imagepath));
-//
-//		} catch (Exception e) {
-//			System.out.println("Error occured while generating QR-Code");
-//		}
-//	}
+
 }

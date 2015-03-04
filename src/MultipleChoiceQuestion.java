@@ -8,6 +8,13 @@ public class MultipleChoiceQuestion extends Question {
 	private String choices[];
 	private int correctChoice;
 
+	private int question_id;
+	private int exam_id;
+	private String question_text;
+	private int answer_id;
+	private int question_type; //don't think it's needed in here. 
+	private int point_value;
+	
 	
 	/**
 	 * 
@@ -16,8 +23,17 @@ public class MultipleChoiceQuestion extends Question {
 	 * @param choices			An array of strings of possible choices.
 	 * @param correctChoice		Index of the correct answer within the choices array.
 	 */
-	public MultipleChoiceQuestion(String questionText, int pointValue,
-			String choices[], int correctChoice){
+	
+	public MultipleChoiceQuestion(int question_id, int exam_id, String question_text, int point_value){
+		super(question_text, point_value);
+		
+	}
+	
+	
+	
+	
+	
+	public MultipleChoiceQuestion(String questionText, int pointValue, String choices[], int correctChoice){
 		super(questionText, pointValue);
 		if (choices.length > MAX_RESPONSES||correctChoice>=choices.length)
 			throw new IllegalArgumentException("Multiple choice questions may have no more than " +
