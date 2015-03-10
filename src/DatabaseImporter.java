@@ -64,7 +64,6 @@ public class DatabaseImporter {
 				questions.add(q);
 				System.out.println(q.toString()); //here for debugging
 				
-				//questions.add(new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value));
 				System.out.println("added a multiple choice question"); // testing
 			}
 /*			else if(question_type == 3){
