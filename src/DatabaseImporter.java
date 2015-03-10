@@ -60,7 +60,11 @@ public class DatabaseImporter {
 			//add a question
 			
 			if(question_type == 0){
-				questions.add(new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value));
+				Question q = new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value);
+				questions.add(q);
+				System.out.println(q.toString()); //here for debugging
+				
+				//questions.add(new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value));
 				System.out.println("added a multiple choice question"); // testing
 			}
 /*			else if(question_type == 3){
@@ -142,6 +146,9 @@ public class DatabaseImporter {
 		for (Answer a : answers) {
 			System.out.println("Returned: " + a.toString());
 		}
+		
+		Collection<Question> questions = di.getQuestions(1);
+		
 	}
 	
 }	
