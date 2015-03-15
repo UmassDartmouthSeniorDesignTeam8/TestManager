@@ -5,32 +5,42 @@ public abstract class Question implements Serializable {
 	private static final long serialVersionUID = -8272622275712458557L;
 	private String question_text;
 	private int point_value;
+	private int question_id;
 
-	private int quest_id;
-	private String answer;
-
-	public Question(String question_text, int point_value) {
+	private int exam_id;
+	
+	public Question(int question_id, String question_text, int point_value, int exam_id) {
+		this.question_id = question_id;
 		this.question_text = question_text;
 		this.point_value = point_value;
+		this.exam_id = exam_id;
 	}
 
 	public abstract boolean isManuallyGraded();
+
+	public int getQuestion_id() {
+		return question_id;
+	}
+
+	public int getExam_id() {
+		return exam_id;
+	}
 
 	public int getPointValue() {
 		return point_value;
 	}
 
-	public void setPointValue(int pointValue) {
-		this.point_value = pointValue;
-	}
-
+//	public void setPointValue(int pointValue) {
+//		this.point_value = pointValue;
+//	}
+//
 	public String getQuestionText() {
 		return question_text;
 	}
 
-	public void setQuestionText(String questionText) {
-		this.question_text = questionText;
-	}
+//	public void setQuestionText(String questionText) {
+//		this.question_text = questionText;
+//	}
 
 
 }
