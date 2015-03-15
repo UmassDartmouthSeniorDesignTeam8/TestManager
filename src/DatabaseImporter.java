@@ -13,15 +13,11 @@ import java.util.logging.Logger;
 
 public class DatabaseImporter {
 
-	/*
-	 * for the database, which I didn't its name so I guessed and named it
-	 * OrionDB
-	 */
-
 	private static Connection conn;
 	
 	//gets connected to the database
 	private static void getDatabaseConnection() {
+			if(conn == null){
 			String url = "jdbc:mysql://50.87.248.81:3306/"; 
 			String dbName = "cobbsoft_orion"; 
 			String driver = "com.mysql.jdbc.Driver"; 
@@ -37,7 +33,7 @@ public class DatabaseImporter {
 					System.out.println("ERROR CONNECTING!");
 					e.printStackTrace(); 
 				} 
-			
+			}
 	} 
 	
 	/*goes through and gets the questions*/
@@ -46,12 +42,12 @@ public class DatabaseImporter {
 		ArrayList<Question> questions = new ArrayList<Question>();
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
-		ResultSet resultSet = stmt.executeQuery("select question_id, test_id, question_text, question_type, point_value from questions  where test_id = '"
+		ResultSet resultSet = stmt.executeQuery("SELECT question_id, test_id, question_text, question_type, point_value FROM questions WHERE test_id = '"
 						+ test_id + "'");
 		
 		//read in from the database
 		while (resultSet.next()) {
-			System.out.println("setting info from the db");
+			System.out.println("setting info from the db"); //debugging
 			int question_id = resultSet.getInt(1);
 			int exam_id = resultSet.getInt(2);	
 			String question_text = resultSet.getString(3);
@@ -60,49 +56,52 @@ public class DatabaseImporter {
 			//add a question
 			
 			if(question_type == 0){
-				Question q = new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value);
+				ArrayList<String> r =  getResponses(question_id);
+				Question q = new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value, r);
 				questions.add(q);
 				System.out.println(q.toString()); //here for debugging
 				
 				System.out.println("added a multiple choice question"); // testing
 			}
 /*			else if(question_type == 3){
-				questions.add(new TrueOrFalseQuestion());
+				Question q = new TrueOrFalseQuestion(question_id, exam_id, question_text, point_value);
+				questions.add(q);
+				System.out.println(q.toString()); //here for debugging
+				
+				System.out.println("added a true/false question"); // testing
 			}
 			else{
-				questions.add(new OpenResponseQuestion());
+				Question q = new OpenResponseQuestion(question_id, exam_id, question_text, point_value);
+				questions.add(q);
+				System.out.println(q.toString()); //here for debugging
+				
+				System.out.println("added a open response question"); // testing
+				
+				
+				
 			}
 */		}
 
 		return questions;
 	}
-
-/*I do not believe this will be needed*/
-/*	public static Exam getExam(int class_id, int test_id) throws SQLException {
-
-		//getDatabaseConnection();
+	
+	public static ArrayList<String> getResponses(int question_id) throws SQLException{
+		ArrayList<String> responses = new ArrayList<String>();
+		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
-		lines 104-106 were commented out
-		ResultSet resultSet = stmt
-				.executeQuery("select exam_name, course_id , coverpageins, date from test where test_id = '"
-						+ test_id + "' and class-id = '" + class_id + "'");
+		ResultSet resultSet = stmt.executeQuery("SELECT response_text FROM responses WHERE question_id = '"
+						+ question_id + "' ORDER BY response_id");
 		
-		ResultSet resultSet = stmt.executeQuery("select test_name, test_id, from tests where test_id = '"
-						+ test_id + "'");
-		String exam_name = resultSet.getString(1);
-		int exam_id = resultSet.getInt(2);
-		//int course_id = resultSet.getInt(1);
-		//String coverpageins = resultSet.getString(2);
-		//Date date = resultSet.getDate(3);
-
-		//Exam ret = new Exam(exam_name, date, coverpageins, course_id);
-		Exam ret = new Exam(exam_name, exam_id);
-		for (Question q : Exam.getQuestionArray(test_id)) {
-		ret.addQuestion(q);
+		//read in from the database
+		while (resultSet.next()) {
+			System.out.println("setting info from the db"); //debugging
+			String response_text = resultSet.getString(1);
+			responses.add(response_text);
 		}
 		
-		return null;
-	} */
+		return responses;
+	}
+	
 
 	public static ArrayList<Answer> getAnswers(int test_id) throws SQLException{
 		ArrayList<Answer> answers = new ArrayList<Answer>();
@@ -146,7 +145,7 @@ public class DatabaseImporter {
 			System.out.println("Returned: " + a.toString());
 		}
 		
-		Collection<Question> questions = di.getQuestions(1);
+		Collection<Question> questions = di.getQuestions(1); //testing
 		
 	}
 	
