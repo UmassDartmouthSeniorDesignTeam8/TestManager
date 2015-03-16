@@ -1,6 +1,8 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+
+import com.google.zxing.ResultPoint;
 /* Alyssa Tavares 
  * Orion
  * This class interprets the QR code strings 
@@ -14,7 +16,6 @@ public class QRStringInterpreter
 	private static String questionNum;
 	private static String answerNum;
 	private static String versionNum;
-	private static int start = 0;
 	private static ArrayList<Response> responses = new ArrayList<Response>();
 
 	public void interpret(File examFile) throws Exception
@@ -25,7 +26,7 @@ public class QRStringInterpreter
 		
 		BufferedImage[] exam = converter.convert(examFile); // call to convert the PDF
 		// returned from convert is an array of bufferedimages which are the pages of the exam
-			
+		
 		/* Outside loop: iterates through the pages of the exam
 		 * Inside loop: iterates through the qrCodes on that particular page
 		 */
@@ -37,7 +38,7 @@ public class QRStringInterpreter
 			 * and store the contents of individual QR code strings in the allCodes array. This
 			 * allCodes array should hold each part of each qrCode on the exam
 			 */
-			for(int i = 0; i < qrStrings.length-1; i++)
+			for(int i = 0; i < qrStrings.length; i++)
 			{								
 				String[] sep = qrStrings[i].split("v");
 				// splits into two parts: [0] before the v (empty) and [1] which is the rest of the string
@@ -56,9 +57,10 @@ public class QRStringInterpreter
 				
 				answerNum = sep5[1]; // the actual answerNum just numbers
 				
-				responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k));
+				int x = 0;
+				responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k, 0, 0));
+				x++;
 				
-				start++; // to keep track where it leaves off
 				}
 			}
 		}
@@ -75,12 +77,18 @@ public class QRStringInterpreter
 			 * Print checks to ensure everything was getting created correctly
 			 * displays everything but the coordinates
 			 */
-			System.out.println("Response " + j + "'s version number: " + responses.get(j).getVersionNum());
-			System.out.println("Response " + j + "'s exam id: " + responses.get(j).getExamID());
-			System.out.println("Response " + j + "'s student Id: " + responses.get(j).getStudentID());
-			System.out.println("Response " + j + "'s question num: " + responses.get(j).getQuestionNum());
-			System.out.println("Response " + j + "'s answer num: " + responses.get(j).getAnswerNum());
-			System.out.println("Response " + j + "'s page number: " + responses.get(j).getPageNum());
+			if(responses.get(j).getPageNum() == 0)
+			{
+				//System.out.println("Response " + j + "'s version number: " + responses.get(j).getVersionNum());
+				//System.out.println("Response " + j + "'s exam id: " + responses.get(j).getExamID());
+				System.out.println("Response " + j + "'s student Id: " + responses.get(j).getStudentID());
+				System.out.println("Response " + j + "'s question num: " + responses.get(j).getQuestionNum());
+				System.out.println("Response " + j + "'s answer num: " + responses.get(j).getAnswerNum());
+				//System.out.println("Response " + j + "'s page number: " + responses.get(j).getPageNum());
+				//System.out.println("Response " + j + "'s X coordinate: " + responses.get(j).getXCoordinate());
+				//System.out.println("Response " + j + "'s X coordinate: " + responses.get(j).getYCoordinate());
+				System.out.println();
+			}
 		}
 	}		
 }	

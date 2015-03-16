@@ -1,3 +1,5 @@
+import com.google.zxing.ResultPoint;
+
 /* 
  * Alyssa Tavares
  * RESPONSE CLASS USED TO HOLD:
@@ -12,8 +14,10 @@ public class Response
 	private String questionNum;
 	private String answerNum;
 	private int pageNum;
-
-	public Response(String v, String e, String s, String q, String a, int p)
+	private float xCoordinate;
+	private float yCoordinate;
+	
+	public Response(String v, String e, String s, String q, String a, int p, float f, float g)
 	{
 		this.versionNum = v;
 		this.examID = e;
@@ -21,6 +25,8 @@ public class Response
 		this.questionNum = q;
 		this.answerNum = a;
 		this.pageNum = p;
+		this.xCoordinate = f;
+		this.yCoordinate = g;
 	}
 
 	// SETTERS
@@ -52,6 +58,16 @@ public class Response
 	public void setPageNum(int pageNum) {
 		this.pageNum = pageNum;
 	}
+	
+	public void setXCoordinate(float x)
+	{
+		this.xCoordinate = x;
+	}
+	
+	public void setYCoordinate(float y)
+	{
+		this.yCoordinate = y;
+	}
 
 	// GETTERS
 	public String getVersionNum() {
@@ -81,6 +97,16 @@ public class Response
 
 	public int getPageNum() {
 		return pageNum;
+	}
+	
+	public float getXCoordinate()
+	{
+		return xCoordinate;
+	}
+	
+	public float getYCoordinate()
+	{
+		return yCoordinate;
 	}
 
 }
