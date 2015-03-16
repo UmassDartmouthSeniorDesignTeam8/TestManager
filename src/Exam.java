@@ -21,7 +21,7 @@ public class Exam implements Serializable {
 	private int exam_id;
 	
 	
-/*	public Exam(String name, Date date, String coverPageInstructions,
+	public Exam(String name, Date date, String coverPageInstructions,
 			Course course) {
 		super();
 		this.name = name;
@@ -29,7 +29,7 @@ public class Exam implements Serializable {
 		this.coverPageInstructions = coverPageInstructions;
 		this.course = course;
 		questions = new ArrayList<Question>();
-	}*/
+	}
 
 	
 	public Exam(String name, int exam_id){
@@ -60,7 +60,9 @@ public class Exam implements Serializable {
 	}
 	
 	public Question[] getQuestionArray(){
-		return (Question[])questions.toArray();
+		Question[] results = new Question[questions.size()];
+		questions.toArray(results);
+		return results;
 	}
 	
 	public int getNumQuestions(){

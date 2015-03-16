@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -10,6 +11,7 @@ public class HTMLGenerator {
 	private Question[] questions;
 	private Exam exam;
 	private Integer questionNums[][];
+	private String fileDirectory;
 	
 	public HTMLGenerator(Exam e){
 		this.exam = e;
@@ -50,11 +52,14 @@ public class HTMLGenerator {
 		return;		
 	}
 	
-	public void generateHTML(String filePath, Exam exam, boolean isRandomized){
+	public void generateHTML(String fileDirectory, boolean isRandomized){
+		this.fileDirectory = fileDirectory;
 		// Randomize if needed; otherwise stock the questions array with the normal ordering
 		this.generateQuestionOrderings(isRandomized);
-		for (int s=0; s<exam.getCourse().getNumStudents(); s++)
-			generateSingleCopyOfExam(s, "s" + s + ".html");
+		for (int s=0; s<exam.getCourse().getNumStudents(); s++){
+			System.out.println("Generating exam " + s);
+			generateSingleCopyOfExam(s, fileDirectory + "\\s" + s + ".html");
+		}
 		
 		/*
 		 * This block generates the QR codes, which are named s###q###i###. Eventually this should be delegated to
@@ -67,6 +72,7 @@ public class HTMLGenerator {
 		PrintWriter outputFile;
 		try{
 			outputFile = new PrintWriter(fileLocation);
+			System.out.println(fileLocation);
 		} catch (Exception e){
 			System.out.println("Error generating exam for student " + studentNum);
 			System.out.println(e.getMessage());			
@@ -82,6 +88,15 @@ public class HTMLGenerator {
 	}
 	
 	private void generateQRCodes(){
+		try{
+			File newDirectory = new File(fileDirectory + "\\images\\");
+			System.out.println(newDirectory);
+			if (!newDirectory.mkdirs()){
+				System.out.println("Could not create images directory");
+			}
+		} catch (Exception e){
+			System.out.println("Error generating images directory. " + e.getMessage());
+		}
 		if (questions==null)
 			return;
 		else{
@@ -91,7 +106,7 @@ public class HTMLGenerator {
 						if (questions[q] instanceof MultipleChoiceQuestion){
 							for (int i=0; i<((MultipleChoiceQuestion) questions[q]).getNumChoices(); i++){
 								String fileName = getQRCodePath(s, q, i);
-								QRCodeHandler.generateQRCode("1", exam.getExamID(), s, q, i,  fileName, 58);
+								QRCodeHandler.generateQRCode(getQRCodePath(s,q,i), 1, exam.getExamID(), s, q, i, 58);
 							}
 						}
 					}
@@ -101,9 +116,9 @@ public class HTMLGenerator {
 	}
 	
 	private String getPageHTMLHeader(){
-		return "<html>\n	<head>\n		<title>" +
+		return "<html>\n	<head>\n<link rel =\"stylesheet\" type = \"text/css\" href=\"basic.css\"><title>" +
 				exam.getName() +  " - " + exam.getCourse().getName() +
-				"</title>\n	</head>\n<body>\n";
+				"</title>\n	</head>\n <body>\n";
 	}
 	
 	private String getPageEnding(){
@@ -115,7 +130,7 @@ public class HTMLGenerator {
 	
 	private String getQuestionHTML(Question q, int question, int student){
 		if (q instanceof MultipleChoiceQuestion)
-			return getMultipleChoiceQuestionHTML((MultipleChoiceQuestion)q, question, student);
+			return getMultipleChoiceQuestionHTML((MultipleChoiceQuestion)q, question, student+1);
 		return "";
 	}
 	
@@ -124,7 +139,7 @@ public class HTMLGenerator {
 		String working = "<div class = \"questionFrame multipleChoiceQuestionFrame\">\n" +
 						 "<div class = \"questionTextFrame multipleChoiceQuestionTextFrame\">\n" +
 						 "<p class = \"questionText multipleChoiceQuestionText\">\n" +
-						 "<em class = \"questionNumber\">" + questionNum + ".</em>" +
+						 "<em class = \"questionNumber\">" + questionNum + ". </em>" +
 						 questions[questionNum].getQuestionText() + 
 						 "<em class = \"pointValue\">(" + questions[questionNum].getPointValue() + " points)</em></p>\n</div>";
 		String[] choices = q.getChoices();
@@ -132,8 +147,8 @@ public class HTMLGenerator {
 		for (int i=0; i<choices.length; i++){
 			working+="<div class=\"responseFrame multipleChoiceResponseFrame\">\n" +
 					 "<div class = \"responseImageFrame\"><img class = \"qrCode\" src = \"" + getQRCodePath(student, questionNum, i) + "\"/></div>\n" +
-					"<div class =\"responseText\"><p class=\"hangingIndent\"><em class = \"responseLetter multipleChoiceResponseLetter\">" + ('A' + i) +
-					"</em>" + choices[i] + "</p>\n</div>";
+					"<div class =\"responseText\"><p class=\"hangingIndent\"><em class = \"responseLetter multipleChoiceResponseLetter\">" + (char)('A' + i) +
+					"</em>" + choices[i] + "</p>\n</div></div>";
 		}
 		// End frame after all responses have been populated
 		working += "</div>";
@@ -141,6 +156,6 @@ public class HTMLGenerator {
 	}
 	
 	private String getQRCodePath(int student, int question, int response){
-		return String.format("images/s%03dq%03di%03d.gif", student, question, response);
+		return String.format(fileDirectory + "\\images\\s%03dq%03di%03d.gif", student, question, response);
 	}
 }

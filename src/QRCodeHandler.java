@@ -66,6 +66,20 @@ public class QRCodeHandler
 			return false;
 		} 		
 	}
+	
+	public static boolean generateQRCode(String filePath, int version, int exam, int student, int question,
+					int response, int size){
+		try{
+			QRCodeWriter writer = new QRCodeWriter();
+			String contents = "v" + version + "e" + exam + "s" + student + "q" + question + "a" + response;
+			BitMatrix image = writer.encode(contents, BarcodeFormat.QR_CODE, size, size);
+
+			MatrixToImageWriter.writeToPath(image, "GIF", Paths.get(filePath));
+			return true;
+		} catch (Exception e){
+			return false;
+		} 
+	}
 
 	public static boolean GenerateBarCode(String imagepath, String contents, int size){
 		try{
