@@ -15,6 +15,11 @@ public abstract class Question implements Serializable {
 		this.point_value = point_value;
 		this.exam_id = exam_id;
 	}
+	
+	public Question(String questionText, int pointValue){
+		this.question_text = questionText;
+		this.point_value = pointValue;
+	}
 
 	public abstract boolean isManuallyGraded();
 

@@ -59,7 +59,7 @@ public class Exam implements Serializable {
 		return exam_id;
 	}
 	
-	public static Question[] getQuestionArray(int exam_id){
+	public Question[] getQuestionArray(){
 		return (Question[])questions.toArray();
 	}
 	

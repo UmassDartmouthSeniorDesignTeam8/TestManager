@@ -7,94 +7,119 @@ import java.util.List;
 
 
 public class HTMLGenerator {
-	private static Question[] questions;
-	private static Exam exam;
+	private Question[] questions;
+	private Exam exam;
+	private Integer questionNums[][];
 	
-	/*
-	 * This method will generate a random ordering of questions for all
-	 * of the students assigned to a class. This will be used to generate
-	 * the exams.
-	 */
-	public Integer[][] generateRandomizedArray(Exam e){
-		int numStudents = e.getCourse().getNumStudents();
-		int numQuestions = e.getNumQuestions();
-		Integer[][] questionNums = new Integer[numStudents][numQuestions];
-		// Make an array list with normally ordered questions
-		ArrayList<Integer> normalOrdering = new ArrayList<Integer>(numQuestions);
-		for (int i=0; i<numQuestions; i++){
-			normalOrdering.add(i);
-		}
-		Collections.shuffle(normalOrdering);
-		for (int i=0; i<numStudents; i++){
-			ArrayList<Integer> shuffledCopy = new ArrayList<Integer>(normalOrdering);
-			Collections.shuffle(shuffledCopy);
-			shuffledCopy.toArray(questionNums[i]);
-		}		
-		return questionNums;		
+	public HTMLGenerator(Exam e){
+		this.exam = e;
+		questions = e.getQuestionArray();
+		questionNums = new Integer[e.getCourse().getNumStudents()][e.getNumQuestions()];
 	}
 	
-	public static void generateHTML(String filePath, Exam exam){
-		questions = exam.getQuestionArray();
-		PrintWriter outputFile;
-		try {
-			outputFile = new PrintWriter(filePath);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		int examID = exam.getExamID();
+	/*
+	 * This method will generate the question orderings for all the exams, which will
+	 * either be randomized or normal.
+	 */
+	private void generateQuestionOrderings(boolean isRandomized){
 		int numStudents = exam.getCourse().getNumStudents();
-		//Output html file header
-		String pageBuilder = getPageHTMLHeader();
-		pageBuilder+="<body>";
-		questions = exam.getQuestionArray();
-		for (int student = 0; student<numStudents; student++){
-			pageBuilder += getCoverPage();
-			for (int questionNum=0; questionNum<questions.length; questionNum++)
-				pageBuilder += getQuestionHTML(questions[questionNum], questionNum, student);
-			
-			
+		int numQuestions = exam.getNumQuestions();
+		
+		if (isRandomized){
+			// Make an array list with normally ordered questions
+			ArrayList<Integer> normalOrdering = new ArrayList<Integer>(numQuestions);
+			for (int i=0; i<numQuestions; i++){
+				normalOrdering.add(i);
+			}
+			// shuffle this and make a new ordering for each exam
+			Collections.shuffle(normalOrdering);
+			for (int i=0; i<numStudents; i++){
+				ArrayList<Integer> shuffledCopy = new ArrayList<Integer>(normalOrdering);
+				Collections.shuffle(shuffledCopy);
+				shuffledCopy.toArray(questionNums[i]);
+			}
+		}else{
+			// Otherwise, generate an array with a normal ordering, which will be referenced  by all exams
+			Integer[] normalQuestionOrdering = new Integer[exam.getNumQuestions()];
+			for (Integer q=0; q<normalQuestionOrdering.length; q++)
+				normalQuestionOrdering[q] = q;
+			for (int s=0; s<exam.getCourse().getNumStudents(); s++)
+				questionNums[s] = normalQuestionOrdering;			
 		}
+
+		return;		
+	}
+	
+	public void generateHTML(String filePath, Exam exam, boolean isRandomized){
+		// Randomize if needed; otherwise stock the questions array with the normal ordering
+		this.generateQuestionOrderings(isRandomized);
+		for (int s=0; s<exam.getCourse().getNumStudents(); s++)
+			generateSingleCopyOfExam(s, "s" + s + ".html");
 		
 		/*
 		 * This block generates the QR codes, which are named s###q###i###. Eventually this should be delegated to
 		 * a thread.
 		 */
-		for (int s=0; s<numStudents; s++){
-			for (int q=0; q<questions.length; q++)
-				if (questions[q] instanceof MultipleChoiceQuestion){
-					for (int i=0; i<((MultipleChoiceQuestion) questions[q]).getNumChoices(); i++){
-						String fileName = getQRCodePath(s, q, i);
-						QRCodeHandler.generateQRCode("1", exam.getExamID(), s, q, i,  fileName, 58);
+		generateQRCodes();
+	}
+	
+	private void generateSingleCopyOfExam(int studentNum, String fileLocation){
+		PrintWriter outputFile;
+		try{
+			outputFile = new PrintWriter(fileLocation);
+		} catch (Exception e){
+			System.out.println("Error generating exam for student " + studentNum);
+			System.out.println(e.getMessage());			
+			return;
+		}
+		String pageBuilder = getPageHTMLHeader();
+		pageBuilder += getCoverPage();
+		for (int questionNum=0; questionNum<questions.length; questionNum++)
+			pageBuilder += getQuestionHTML(questions[questionNum], questionNum, studentNum);
+		pageBuilder += getPageEnding();
+		outputFile.print(pageBuilder);
+		outputFile.close();
+	}
+	
+	private void generateQRCodes(){
+		if (questions==null)
+			return;
+		else{
+			for (int s=0; s<exam.getCourse().getNumStudents(); s++){
+				for (int q=0; q<questions.length; q++){
+					if (questions[1]!=null){
+						if (questions[q] instanceof MultipleChoiceQuestion){
+							for (int i=0; i<((MultipleChoiceQuestion) questions[q]).getNumChoices(); i++){
+								String fileName = getQRCodePath(s, q, i);
+								QRCodeHandler.generateQRCode("1", exam.getExamID(), s, q, i,  fileName, 58);
+							}
+						}
 					}
 				}
-		}
-		
-		// Generate the HTML for all of the questions
-		for (int s=0; s<numStudents; s++){
-			for (int q = 0; q<questions.length; q++){
-				
 			}
 		}
 	}
 	
-	public static String getPageHTMLHeader(){
+	private String getPageHTMLHeader(){
 		return "<html>\n	<head>\n		<title>" +
 				exam.getName() +  " - " + exam.getCourse().getName() +
-				"</title>\n	</head>\n";
+				"</title>\n	</head>\n<body>\n";
 	}
-	private static String getCoverPage(){
+	
+	private String getPageEnding(){
+		return "</body>\n</html>\n";
+	}
+	private String getCoverPage(){
 		return "";
 	}
 	
-	private static String getQuestionHTML(Question q, int question, int student){
+	private String getQuestionHTML(Question q, int question, int student){
 		if (q instanceof MultipleChoiceQuestion)
 			return getMultipleChoiceQuestionHTML((MultipleChoiceQuestion)q, question, student);
 		return "";
 	}
 	
-	private static String getMultipleChoiceQuestionHTML(MultipleChoiceQuestion q, int questionNum, int student){
+	private String getMultipleChoiceQuestionHTML(MultipleChoiceQuestion q, int questionNum, int student){
 		// First write the question frame, question text Frame and question text
 		String working = "<div class = \"questionFrame multipleChoiceQuestionFrame\">\n" +
 						 "<div class = \"questionTextFrame multipleChoiceQuestionTextFrame\">\n" +
@@ -115,7 +140,7 @@ public class HTMLGenerator {
 		return working;
 	}
 	
-	private static String getQRCodePath(int student, int question, int response){
+	private String getQRCodePath(int student, int question, int response){
 		return String.format("images/s%03dq%03di%03d.gif", student, question, response);
 	}
 }

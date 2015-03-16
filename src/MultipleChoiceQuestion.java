@@ -20,26 +20,26 @@ public class MultipleChoiceQuestion extends Question {
 	 * @param correctChoice		Index of the correct answer within the choices array.
 	 */
 	
-	public MultipleChoiceQuestion(int question_id, int exam_id, String question_text, int point_value, ArrayList<String> response_text){
-		super(question_id, question_text, point_value, exam_id); 
-		this.response_text = response_text;
-	}
-	
-	
-	
-	
-	
-//	public MultipleChoiceQuestion(String questionText, int pointValue, String choices[], int correctChoice){
-//		super(questionText, pointValue);
-//		if (choices.length > MAX_RESPONSES||correctChoice>=choices.length)
-//			throw new IllegalArgumentException("Multiple choice questions may have no more than " +
-//							MAX_RESPONSES + " choices. Correct choice must be a valid index of an element " +
-//							"in the choices array.");
-//		else {
-//			this.choices = choices;
-//			this.correctChoice = correctChoice;
-//		}
+//	public MultipleChoiceQuestion(int question_id, int exam_id, String question_text, int point_value, ArrayList<String> response_text){
+//		super(question_text, point_value, response_text.toArray(), ); 
+//		this.response_text = response_text;
 //	}
+	
+	
+	
+	
+	
+	public MultipleChoiceQuestion(String questionText, int pointValue, String choices[], int correctChoice){
+		super(questionText, pointValue);
+		if (choices.length > MAX_RESPONSES||correctChoice>=choices.length)
+			throw new IllegalArgumentException("Multiple choice questions may have no more than " +
+							MAX_RESPONSES + " choices. Correct choice must be a valid index of an element " +
+							"in the choices array.");
+		else {
+			this.choices = choices;
+			this.correctChoice = correctChoice;
+		}
+	}
 	
 	/**
 	 * 
