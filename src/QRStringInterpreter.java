@@ -16,7 +16,9 @@ public class QRStringInterpreter
 	private static String questionNum;
 	private static String answerNum;
 	private static String versionNum;
-	private static ArrayList<Response> responses = new ArrayList<Response>();
+	private static int x = 0;
+	private static ArrayList<Response> responses = new ArrayList<Response>(); // holds the information of each QRCode
+	private static ArrayList<ResultPoint[]> points; // array of the coordinates for each QRCode
 
 	public void interpret(File examFile) throws Exception
 	{
@@ -33,6 +35,7 @@ public class QRStringInterpreter
 		for(int k = 0; k < exam.length; k++)
 		{
 			qrStrings = QRCodeHandler.readAllCodes(exam[k]);
+			points = QRCodeHandler.getCoordinates();
 
 			/* for each page of the exam, use qrStrings to store the read QR codes on that page
 			 * and store the contents of individual QR code strings in the allCodes array. This
@@ -57,8 +60,8 @@ public class QRStringInterpreter
 				
 				answerNum = sep5[1]; // the actual answerNum just numbers
 				
-				int x = 0;
-				responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k, 0, 0));
+				// create each Response in the arrayList
+				responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k, points.get(x)));
 				x++;
 				
 				}
@@ -77,18 +80,21 @@ public class QRStringInterpreter
 			 * Print checks to ensure everything was getting created correctly
 			 * displays everything but the coordinates
 			 */
-			if(responses.get(j).getPageNum() == 0)
-			{
-				//System.out.println("Response " + j + "'s version number: " + responses.get(j).getVersionNum());
-				//System.out.println("Response " + j + "'s exam id: " + responses.get(j).getExamID());
+				System.out.println("Response " + j + "'s version number: " + responses.get(j).getVersionNum());
+				System.out.println("Response " + j + "'s exam id: " + responses.get(j).getExamID());
 				System.out.println("Response " + j + "'s student Id: " + responses.get(j).getStudentID());
 				System.out.println("Response " + j + "'s question num: " + responses.get(j).getQuestionNum());
 				System.out.println("Response " + j + "'s answer num: " + responses.get(j).getAnswerNum());
-				//System.out.println("Response " + j + "'s page number: " + responses.get(j).getPageNum());
-				//System.out.println("Response " + j + "'s X coordinate: " + responses.get(j).getXCoordinate());
-				//System.out.println("Response " + j + "'s X coordinate: " + responses.get(j).getYCoordinate());
+				System.out.println("Response " + j + "'s page number: " + responses.get(j).getPageNum());
+				System.out.println("Response " + j + "'s coordinates:");
+				
+				// each qrCode has three coordinates, these are held in an array
+				ResultPoint[] coordinates = responses.get(j).getCoordinates();
+				for(int k = 0; k < coordinates.length; k++)
+				{
+					System.out.println(coordinates[k]); 
+				}
 				System.out.println();
-			}
 		}
 	}		
 }	

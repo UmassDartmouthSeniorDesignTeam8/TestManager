@@ -14,10 +14,9 @@ public class Response
 	private String questionNum;
 	private String answerNum;
 	private int pageNum;
-	private float xCoordinate;
-	private float yCoordinate;
+	private ResultPoint[] coordinates;
 	
-	public Response(String v, String e, String s, String q, String a, int p, float f, float g)
+	public Response(String v, String e, String s, String q, String a, int p, ResultPoint[] c)
 	{
 		this.versionNum = v;
 		this.examID = e;
@@ -25,8 +24,7 @@ public class Response
 		this.questionNum = q;
 		this.answerNum = a;
 		this.pageNum = p;
-		this.xCoordinate = f;
-		this.yCoordinate = g;
+		this.coordinates = c;
 	}
 
 	// SETTERS
@@ -59,14 +57,9 @@ public class Response
 		this.pageNum = pageNum;
 	}
 	
-	public void setXCoordinate(float x)
+	public void setCoordinates(ResultPoint[] c)
 	{
-		this.xCoordinate = x;
-	}
-	
-	public void setYCoordinate(float y)
-	{
-		this.yCoordinate = y;
+		this.coordinates = c;
 	}
 
 	// GETTERS
@@ -99,14 +92,9 @@ public class Response
 		return pageNum;
 	}
 	
-	public float getXCoordinate()
+	public ResultPoint[] getCoordinates()
 	{
-		return xCoordinate;
-	}
-	
-	public float getYCoordinate()
-	{
-		return yCoordinate;
+		return coordinates;
 	}
 
 }
