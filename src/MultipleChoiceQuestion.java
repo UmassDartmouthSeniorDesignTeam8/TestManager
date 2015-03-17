@@ -53,8 +53,11 @@ public class MultipleChoiceQuestion extends Question {
 		return 0;
 	}
 	/*gives the string array that was wanted <co>*/
+	// this cannot be cast directly and needs a temporary pleaceholder array to work <sb>
 	public String[] getChoices(){
-		return (String[]) choices.toArray();
+		String[] toReturn = new String[choices.size()];
+		choices.toArray(toReturn);
+		return toReturn;
 	}
 	
 	public int getNumChoices(){

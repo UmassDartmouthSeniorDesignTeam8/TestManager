@@ -15,6 +15,7 @@ public class Tester {
 		chooser.setAcceptAllFileFilterUsed(false);
 		if (chooser.showOpenDialog(new JPanel()) == JFileChooser.APPROVE_OPTION){
 			System.out.println(chooser.getCurrentDirectory().toString());
+			System.out.println(chooser.getSelectedFile());
 			gen.generateHTML(chooser.getCurrentDirectory().toString(), true);
 		};
 	}
