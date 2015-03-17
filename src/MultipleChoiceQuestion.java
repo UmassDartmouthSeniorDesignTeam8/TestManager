@@ -5,7 +5,7 @@ public class MultipleChoiceQuestion extends Question {
 	
 	private static final long serialVersionUID = -29356089960775464L;
 	public final int MAX_RESPONSES = 10;
-	private String choices[];
+	private ArrayList<String> choices;
 	private int correctChoice;
 
 
@@ -21,7 +21,8 @@ public class MultipleChoiceQuestion extends Question {
 	 */
 	
 //	public MultipleChoiceQuestion(int question_id, int exam_id, String question_text, int point_value, ArrayList<String> response_text){
-//		super(question_text, point_value, response_text.toArray(), ); 
+	/*why is repsponse_text going to the super class?? <co>*/
+	//		super(question_text, point_value, response_text.toArray() );  
 //		this.response_text = response_text;
 //	}
 	
@@ -29,9 +30,9 @@ public class MultipleChoiceQuestion extends Question {
 	
 	
 	
-	public MultipleChoiceQuestion(String questionText, int pointValue, String choices[], int correctChoice){
-		super(questionText, pointValue);
-		if (choices.length > MAX_RESPONSES||correctChoice>=choices.length)
+	public MultipleChoiceQuestion(int question_id, int exam_id, String questionText, int pointValue, ArrayList<String> choices, int correctChoice){
+		super(question_id, questionText, pointValue, exam_id);
+		if (choices.size() > MAX_RESPONSES||correctChoice>=choices.size())
 			throw new IllegalArgumentException("Multiple choice questions may have no more than " +
 							MAX_RESPONSES + " choices. Correct choice must be a valid index of an element " +
 							"in the choices array.");
@@ -51,13 +52,13 @@ public class MultipleChoiceQuestion extends Question {
 			return getPointValue();
 		return 0;
 	}
-	
+	/*gives the string array that was wanted <co>*/
 	public String[] getChoices(){
-		return choices;
+		return (String[]) choices.toArray();
 	}
 	
 	public int getNumChoices(){
-		return choices.length;
+		return choices.size();
 	}
 
 	@Override

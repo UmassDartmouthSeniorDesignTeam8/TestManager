@@ -16,6 +16,7 @@ public abstract class Question implements Serializable {
 		this.exam_id = exam_id;
 	}
 	
+	/*how can you make a question without a question_id & exam_id??*/
 	public Question(String questionText, int pointValue){
 		this.question_text = questionText;
 		this.point_value = pointValue;

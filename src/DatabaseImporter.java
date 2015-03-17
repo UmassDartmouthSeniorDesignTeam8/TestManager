@@ -42,7 +42,7 @@ public class DatabaseImporter {
 		ArrayList<Question> questions = new ArrayList<Question>();
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
-		ResultSet resultSet = stmt.executeQuery("SELECT question_id, test_id, question_text, question_type, point_value FROM questions WHERE test_id = '"
+		ResultSet resultSet = stmt.executeQuery("SELECT question_id, test_id, question_text, question_type, point_value, answer_id FROM questions WHERE test_id = '"
 						+ test_id + "'");
 		
 		//read in from the database
@@ -53,11 +53,12 @@ public class DatabaseImporter {
 			String question_text = resultSet.getString(3);
 			int question_type = resultSet.getInt(4);
 			int point_value = resultSet.getInt(5);
+			int answer_id = resultSet.getInt(6);
 			//add a question
 			
 			if(question_type == 0){
 				ArrayList<String> r =  getResponses(question_id);
-				Question q = new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value, r);
+				Question q = new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value, r, answer_id);
 				questions.add(q);
 				System.out.println(q.toString()); //here for debugging
 				
