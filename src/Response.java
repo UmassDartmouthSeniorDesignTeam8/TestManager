@@ -8,15 +8,15 @@ import com.google.zxing.ResultPoint;
  */
 public class Response 
 {
-	private String versionNum;
-	private String examID;
-	private String studentID;
-	private String questionNum;
-	private String answerNum;
+	private int versionNum;
+	private int examID;
+	private int studentID;
+	private int questionNum;
+	private int answerNum;
 	private int pageNum;
 	private ResultPoint[] coordinates;
 	
-	public Response(String v, String e, String s, String q, String a, int p, ResultPoint[] c)
+	public Response(int v, int e, int s, int q, int a, int p, ResultPoint[] c)
 	{
 		this.versionNum = v;
 		this.examID = e;
@@ -28,27 +28,27 @@ public class Response
 	}
 
 	// SETTERS
-	public void setVersionNum(String versionNum) {
+	public void setVersionNum(int versionNum) {
 		this.versionNum = versionNum;
 	}
 
 
-	public void setExamID(String examID) {
+	public void setExamID(int examID) {
 		this.examID = examID;
 	}
 
 
-	public void setStudentID(String studentID) {
+	public void setStudentID(int studentID) {
 		this.studentID = studentID;
 	}
 
 
-	public void setQuestionNum(String questionNum) {
+	public void setQuestionNum(int questionNum) {
 		this.questionNum = questionNum;
 	}
 
 
-	public void setAnswerNum(String answerNum) {
+	public void setAnswerNum(int answerNum) {
 		this.answerNum = answerNum;
 	}
 
@@ -63,27 +63,27 @@ public class Response
 	}
 
 	// GETTERS
-	public String getVersionNum() {
+	public int getVersionNum() {
 		return versionNum;
 	}
 
 
-	public String getExamID() {
+	public int getExamID() {
 		return examID;
 	}
 
 
-	public String getStudentID() {
+	public int getStudentID() {
 		return studentID;
 	}
 
 
-	public String getQuestionNum() {
+	public int getQuestionNum() {
 		return questionNum;
 	}
 
 
-	public String getAnswerNum() {
+	public int getAnswerNum() {
 		return answerNum;
 	}
 
