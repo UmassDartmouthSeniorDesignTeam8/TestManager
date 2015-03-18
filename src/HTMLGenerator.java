@@ -52,6 +52,12 @@ public class HTMLGenerator {
 		return;		
 	}
 	
+
+	/**
+	 * Generates HTML files for all exams in the given directory.
+	 * @param fileDirectory	- File directory where html files will go; images will go into /images/
+	 * @param isRandomized - Determines whether or not each exam will have a random question ordering
+	 */
 	public void generateHTML(String fileDirectory, boolean isRandomized){
 		this.fileDirectory = fileDirectory;
 		// Randomize if needed; otherwise stock the questions array with the normal ordering
@@ -68,6 +74,9 @@ public class HTMLGenerator {
 		generateQRCodes();
 	}
 	
+	/*
+	 * Generates a single copy of the HTML exam.
+	 */
 	private void generateSingleCopyOfExam(int studentNum, String fileLocation){
 		PrintWriter outputFile;
 		try{
@@ -87,6 +96,9 @@ public class HTMLGenerator {
 		outputFile.close();
 	}
 	
+	/*
+	 * Generates all of the QR codes needed by an exam.
+	 */
 	private void generateQRCodes(){
 		try{
 			File newDirectory = new File(fileDirectory + "\\images\\");
@@ -125,14 +137,15 @@ public class HTMLGenerator {
 	
 	private String getPageEnding(){
 		return "</body>\n</html>\n";
-	}
+	} 
 	private String getCoverPage(){
+		// TODO
 		return "";
 	}
 	
 	private String getQuestionHTML(Question q, int question, int student){
 		if (q instanceof MultipleChoiceQuestion)
-			return getMultipleChoiceQuestionHTML((MultipleChoiceQuestion)q, question, student+1);
+			return getMultipleChoiceQuestionHTML((MultipleChoiceQuestion)q, question, student);
 		return "";
 	}
 	

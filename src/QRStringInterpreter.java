@@ -88,7 +88,7 @@ public class QRStringInterpreter
 				System.out.println("Response " + j + "'s exam id: " + responses.get(j).getExamID());
 				System.out.println("Response " + j + "'s student Id: " + responses.get(j).getStudentID());
 				System.out.println("Response " + j + "'s question num: " + responses.get(j).getQuestionNum());
-				System.out.println("Response " + j + "'s answer num: " + responses.get(j).getAnswerNum());
+				System.out.println("Response " + j + "'s answer num: " + responses.get(j).getResponseNum()); //renamed this method and updated here
 				System.out.println("Response " + j + "'s page number: " + responses.get(j).getPageNum());
 				System.out.println("Response " + j + "'s coordinates:");
 				
