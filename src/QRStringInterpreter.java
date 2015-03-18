@@ -67,6 +67,10 @@ public class QRStringInterpreter
 				}
 			}
 		}
+	
+	public ArrayList<Response> getResponses(){
+		return responses;
+	}
 
 	public static void main(String[] args) throws Exception
 	{

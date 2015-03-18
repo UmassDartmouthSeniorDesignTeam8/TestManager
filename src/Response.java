@@ -12,7 +12,8 @@ public class Response
 	private String examID;
 	private String studentID;
 	private String questionNum;
-	private String answerNum;
+	// I renamed AnswerNum to REsponseNum for consistent naming; this is most likely because I wrote it down incorrectly originally <SB>
+	private String responseNum;
 	private int pageNum;
 	private ResultPoint[] coordinates;
 	
@@ -22,7 +23,7 @@ public class Response
 		this.examID = e;
 		this.studentID = s;
 		this.questionNum = q;
-		this.answerNum = a;
+		this.responseNum = a;
 		this.pageNum = p;
 		this.coordinates = c;
 	}
@@ -48,8 +49,8 @@ public class Response
 	}
 
 
-	public void setAnswerNum(String answerNum) {
-		this.answerNum = answerNum;
+	public void setResponseNum(String answerNum) {
+		this.responseNum = answerNum;
 	}
 
 
@@ -83,8 +84,8 @@ public class Response
 	}
 
 
-	public String getAnswerNum() {
-		return answerNum;
+	public String getResponseNum() {
+		return responseNum;
 	}
 
 
