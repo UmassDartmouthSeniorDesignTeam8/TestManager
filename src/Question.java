@@ -43,6 +43,8 @@ public abstract class Question implements Serializable {
 	public String getQuestionText() {
 		return question_text;
 	}
+	
+	public abstract int getNumChoices();
 
 //	public void setQuestionText(String questionText) {
 //		this.question_text = questionText;
