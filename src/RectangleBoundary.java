@@ -6,24 +6,33 @@ import com.google.zxing.ResultPoint;
 
 public class RectangleBoundary {
 	private float topLeftX, topLeftY, bottomRightX, bottomRightY;
+	private int pageNumber;
 	
-	public RectangleBoundary(ResultPoint[] points){
-		float maxX = 0, maxY = 0, minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
+	public RectangleBoundary(int pageNum){
+		this.pageNumber = pageNum;
+		topLeftX = 0;
+		topLeftY = 0;
+		bottomRightX = Integer.MAX_VALUE;
+		bottomRightY = Integer.MAX_VALUE;
+	}
+	
+	public RectangleBoundary(ResultPoint[] points, int pageNum){
+		this(pageNum);
 		// determine the farthest points for Xs and Ys
+		addPoints(points);
+	}
+	
+	public void addPoints(ResultPoint[] points){
 		for (ResultPoint p: points){
-			if (p.getX() < minX)
-				minX = p.getX();
-			else if (p.getX() > maxX)
-				maxX = p.getX();
-			if (p.getY() < minY)
-				minY = p.getY();
-			else if (p.getY() > maxY)
-				maxY = p.getY();
+			if (p.getX() < topLeftX)
+				topLeftX = p.getX();
+			if (p.getX() > bottomRightX)
+				bottomRightX = p.getX();
+			if (p.getY() < topLeftY)
+				topLeftY = p.getY();
+			else if (p.getY() > bottomRightY)
+				bottomRightY = p.getY();
 		}
-		topLeftX = minX;
-		topLeftY = minY;
-		bottomRightX = maxX;
-		bottomRightY = maxY;
 	}
 
 	public float getTopLeftX() {
@@ -40,5 +49,13 @@ public class RectangleBoundary {
 
 	public float getBottomRightY() {
 		return bottomRightY;
+	}
+	
+	public int getPageNum(){
+		return pageNumber;
+	}
+	
+	public void setPageNum(int pageNumber){
+		this.pageNumber = pageNumber;
 	}
 }

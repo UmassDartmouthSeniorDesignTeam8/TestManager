@@ -10,6 +10,8 @@ public abstract class ManuallyGradedItem {
 	public final int DUPLICATE_QRCODES_DETECTED = 2;
 	// used when the QR code near a student's name is identified
 	public final int STUDENT_NAME = 3;
+	// used when no QR codes are found
+	public final int NO_QR_CODES_DETECTED_FOR_QUESTION = 4;
 	private int choiceSelected, pointsAwarded;
 	private int reason;
 	private int maxPoints;
