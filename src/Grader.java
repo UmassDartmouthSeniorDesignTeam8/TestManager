@@ -2,9 +2,14 @@ import java.util.ArrayList;
 
 
 public class Grader {
+	public final static int NO_RESPONSE = -2;
+	public final static int UNKNOWN_ANSWER = -1;
+	
 	private Exam exam;
 	private ArrayList<Response> responses;
 	private ManualGradeHandler handler;
+	private int chosenAnswers[][];
+	private int points[][];
 	
 	/**
 	 * The grader class associates a list of responses with the exam itself.
@@ -18,6 +23,8 @@ public class Grader {
 		this.exam = e;
 		this.responses = r;
 		this.handler = handler;
+		chosenAnswers = new int[exam.getCourse().getNumStudents()][exam.getNumQuestions()];
+		points = new int[exam.getCourse().getNumStudents()][exam.getNumQuestions()];
 	}
 	
 	public void generateGrades(){
@@ -58,10 +65,10 @@ public class Grader {
 			}
 		}
 		// Once they have all been filled, it's time to check every question to see that it has the right number of responses
-		for (int s = 0; s<qrCodesFound.length; s++)
+		for (int s = 0; s<qrCodesFound.length; s++){
 			for (int q = 0; q<qrCodesFound[s].length; q++){
 				// Sum up how many QR codes were found for this particular section
-				int responsesForThisQuestion = 0, chosenResponse;
+				int responsesForThisQuestion = 0, chosenResponse = 0;
 				for (int r = 0; r<qrCodesFound[s][q].length; r++)
 					// If the code is found, increment the count. Otherwise, it is the chosen response assuming there is no error
 					if (qrCodesFound[s][q][r])
@@ -69,13 +76,24 @@ public class Grader {
 					else
 						chosenResponse = r;
 				// If this is not one less than the number of responses, generate an error
-				if (responsesForThisQuestion == 0)
+				if (responsesForThisQuestion == 0){
 					// No QR codes found (ie page not scanned)
 					handler.addNewMissingItem(s, q, questions[q]);
-				if (responsesForThisQuestion+1!=qrCodesFound[s][q].length){
+					chosenAnswers[s][q] = UNKNOWN_ANSWER;
+				} else if (responsesForThisQuestion == qrCodesFound[s][q].length)
+					chosenAnswers[s][q] = NO_RESPONSE;
+					// In this case, no answer was selected
+				else if (responsesForThisQuestion+1!=qrCodesFound[s][q].length){
 					// 2 or more barcodes undetected = indicates uncertain answer
-					handler.addNewMultipleChoiceItem(s, q, questions[q], ManualGradeHandler.MULTIPLE_CHOICE_ANSWER_INDETERMINATE, questionBoundaries[s][q]);
-				}					
-			}				
+					chosenAnswers[s][q] = UNKNOWN_ANSWER;
+					handler.addNewMultipleChoiceItem(s, q, questions[q], ManualGradeHandler.MULTIPLE_CHOICE_ANSWER_INDETERMINATE, questionBoundaries[s][q]);						
+				} else {
+					// otherwise, the answer is definitively known and can be recorded
+					chosenAnswers[s][q] = chosenResponse;
+					points[s][q] = questions[q].getPointValue();
+				}
+					
+			}
+		}
 	}
 }

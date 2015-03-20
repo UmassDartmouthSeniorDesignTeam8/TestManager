@@ -10,7 +10,7 @@ import com.google.zxing.ResultPoint;
  */ 
 public class QRStringInterpreter 
 {
-	private String[] qrStrings;
+	private static String[] qrStrings;
 	private static int examID;
 	private static int studentID;
 	private static int questionNum;
@@ -20,7 +20,8 @@ public class QRStringInterpreter
 	private static ArrayList<Response> responses = new ArrayList<Response>(); // holds the information of each QRCode
 	private static ArrayList<ResultPoint[]> points; // array of the coordinates for each QRCode
 
-	public void interpret(File examFile) throws Exception
+	// changed return type so other classes can use the results <sb>
+	public static ArrayList<Response> interpret(File examFile) throws Exception
 	{
 		// convert the PDF to an image
 		PDFtoImage converter = new PDFtoImage(); // create new converter object
@@ -66,6 +67,7 @@ public class QRStringInterpreter
 				
 				}
 			}
+			return responses;
 		}
 	
 	/*  the main method here is for testing purposes only */
