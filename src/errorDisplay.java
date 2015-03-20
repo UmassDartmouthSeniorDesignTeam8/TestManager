@@ -1,5 +1,3 @@
-package pdf_writer;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import com.itextpdf.text.Document;
@@ -57,7 +55,7 @@ public class errorDisplay {
      */
     public static void main(String[] args) throws DocumentException, IOException {
     	errorDisplay example = new errorDisplay();
-    	errorDisplay.main(args);
+    	//errorDisplay.main(args);
         
     	//this is a random shape created at these points, showing drawing comment out in production
     	example.parsePdf("mock.pdf", "mock.pdf", 200, 200, 200, 200);
