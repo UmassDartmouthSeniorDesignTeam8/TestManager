@@ -36,18 +36,18 @@ public class DatabaseImporter {
 			}
 	} 
 	
-	/*goes through and gets the questions*/
-	public static Collection<Question> getQuestions(int test_id) throws SQLException {
+	/*goes through and gets the questions, for a given test_id.... <co>*/
+	public Collection<Question> getQuestions(int test_id) throws SQLException {
 		
 		ArrayList<Question> questions = new ArrayList<Question>();
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet resultSet = stmt.executeQuery("SELECT question_id, test_id, question_text, question_type, point_value, answer_id FROM questions WHERE test_id = '"
 						+ test_id + "'");
-		
+	
 		//read in from the database
 		while (resultSet.next()) {
-			System.out.println("setting info from the db"); //debugging
+			System.out.println("getting info from the db"); //debugging
 			int question_id = resultSet.getInt(1);
 			int exam_id = resultSet.getInt(2);	
 			String question_text = resultSet.getString(3);
@@ -57,8 +57,12 @@ public class DatabaseImporter {
 			//add a question
 			
 			if(question_type == 0){
-				ArrayList<String> r =  getResponses(question_id);
-				Question q = new MultipleChoiceQuestion(question_id, exam_id, question_text, point_value, r, answer_id);
+				System.out.println("Getting Responses for Question: "+ question_id);
+				ArrayList<String> r =  getResponses(exam_id, question_id);
+				/*MultipleChoiceQuestion now ONLY takes question_text, point_value, an array list of responses and an answer_id
+				 * That being said is answer_id the position of the correct answer? <co> */
+				System.out.println("READ BACK AS: "+r);
+				Question q = new MultipleChoiceQuestion(question_text, point_value, r, answer_id); //causes issue after 4 questions because of the non-exsistant way of telling the actual correct choice
 				questions.add(q);
 				System.out.println(q.toString()); //here for debugging
 				
@@ -86,24 +90,30 @@ public class DatabaseImporter {
 		return questions;
 	}
 	
-	public static ArrayList<String> getResponses(int question_id) throws SQLException{
+	/*Is called by getQuestions to get the responses for the mc questions only <co>*/
+	public static ArrayList<String> getResponses(int exam_id, int question_id) throws SQLException{
 		ArrayList<String> responses = new ArrayList<String>();
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet resultSet = stmt.executeQuery("SELECT response_text FROM responses WHERE question_id = '"
-						+ question_id + "' ORDER BY response_id");
+						+ question_id + "' AND test_id = '"+ exam_id + "'");
 		
 		//read in from the database
 		while (resultSet.next()) {
-			System.out.println("setting info from the db"); //debugging
+			//System.out.println("setting info from the db"); //debugging
 			String response_text = resultSet.getString(1);
+			System.out.println("RESPONSE: "+ response_text); // testing
+
 			responses.add(response_text);
 		}
 		
+		System.out.println("RESPONSE: "+ responses); // testing
 		return responses;
 	}
 	
-
+	/*Hypothetically will give the correct response (ie Answer Key)
+	 * When a response is_answer is equal to 1, then that get added to the an arraylist of 
+	 * answers <co>*/
 	public static ArrayList<Answer> getAnswers(int test_id) throws SQLException{
 		ArrayList<Answer> answers = new ArrayList<Answer>();
 		getDatabaseConnection();
@@ -114,7 +124,7 @@ public class DatabaseImporter {
 		//read in from the database
 		try {
 			while (resultSet.next()) {
-				System.out.println("setting info from the db");
+				//System.out.println("setting info from the db");
 				int question_id = resultSet.getInt(1); 
 				String response_text = resultSet.getString(2);			
 				int response_id = resultSet.getInt(3);
@@ -135,7 +145,7 @@ public class DatabaseImporter {
 	}
 	
 	
-	public static void main(String args[]) throws SQLException {
+/* public static void main(String args[]) throws SQLException {
 
 		DatabaseImporter di= new DatabaseImporter();
 		
@@ -148,6 +158,6 @@ public class DatabaseImporter {
 		
 		Collection<Question> questions = di.getQuestions(1); //testing
 		
-	}
+	} */
 	
 }	

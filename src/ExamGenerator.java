@@ -18,13 +18,14 @@ public class ExamGenerator {
 			   add("4");
 			   add("5");
 			   }};
+
 			   
-		// MultipleChoiceQuestion(question_id, exam_id, question_text, point_value, r, answer_id)
-		MultipleChoiceQuestion question1 = new MultipleChoiceQuestion(1, 1, "Select 4.",5,responses,3);
-		MultipleChoiceQuestion question2 = new MultipleChoiceQuestion(2, 1, "Select 2.",5,responses,1);
+		//NOW the parameters are (question_text, point_value, r, answer_id) <co>
+		MultipleChoiceQuestion question1 = new MultipleChoiceQuestion("Select 4.",5,responses,3);
+		MultipleChoiceQuestion question2 = new MultipleChoiceQuestion("Select 2.",5,responses,1);
 		System.out.println(question1.getNumChoices());
 		System.out.println(question2.getNumChoices());
-		MultipleChoiceQuestion question3 = new MultipleChoiceQuestion(3, 1, "The answer is 5, idiot.",5,responses,4);
+		MultipleChoiceQuestion question3 = new MultipleChoiceQuestion("The answer is 5, idiot.",5,responses,4);
 		/*constructor has to match... I don't know why it isn't liking the test name. <co>*/
 		//Exam e = new Exam("Practice Test1", 1);
 		// This constructor is declared; otherwise the date is never specified. <SB>

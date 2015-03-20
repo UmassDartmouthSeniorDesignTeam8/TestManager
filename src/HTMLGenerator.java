@@ -118,8 +118,6 @@ public class HTMLGenerator {
 						if (questions[q] instanceof MultipleChoiceQuestion){
 							for (int i=0; i<((MultipleChoiceQuestion) questions[q]).getNumChoices(); i++){
 								String fileName = getQRCodePath(s, q, i);
-								//QRCodeHandler.GenerateQRCode("1", exam.getExamID(), s, q, i,  fileName, 58);
-			                  /* GenerateQRCode(String imagepath, String contents, int size) has to match this <co>*/
 								QRCodeHandler.generateQRCode(getQRCodePath(s,q,i), 1, exam.getExamID(), s, q, i, 58);
 							}
 						}

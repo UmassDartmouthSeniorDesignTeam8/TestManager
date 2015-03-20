@@ -23,16 +23,16 @@ public class TrueOrFalseQuestion extends MultipleChoiceQuestion {
 //	}
 
 	// This will call the multiple choice constructor and leaves choices null (since they are static)
-	public TrueOrFalseQuestion(int question_id, int exam_id, String questionText, int pointValue, int correctChoice){
-		super(question_id, exam_id, questionText, pointValue, null, correctChoice);
+	//public TrueOrFalseQuestion(int question_id, int exam_id, String questionText, int pointValue, int correctChoice){
+	public TrueOrFalseQuestion(String questionText, int pointValue, int correctChoice){
+		super(questionText, pointValue, null, correctChoice);
+		/*I deleted question_id and exam_id because there not going to be used in the actual program 
+		 * changed from: 
+		 * 			super(question_id, exam_id, questionText, pointValue, null, correctChoice);*/
 	}
 	
 	public String toString() {
 		StringBuffer b = new StringBuffer();
-		b.append("Answer: question_id= " );
-		b.append(getQuestion_id());
-		b.append(" exam_id = >");
-		b.append(getExam_id());
 		b.append("< question_text = ");
 		b.append(getQuestionText());
 		b.append("< point_value = ");

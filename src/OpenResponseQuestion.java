@@ -6,9 +6,13 @@ public class OpenResponseQuestion extends Question {
 
 	
 	
-	
-	public OpenResponseQuestion(int question_id, int exam_id, String question_text, int point_value){
-		super(question_id, question_text, point_value, exam_id); 
+	//no longer any question_id and exam_id <co>
+//	public OpenResponseQuestion(int question_id, int exam_id, String question_text, int point_value){
+//		super(question_id, question_text, point_value, exam_id); 
+//	}
+
+	public OpenResponseQuestion(String question_text, int point_value){
+		super(question_text, point_value); 
 	}
 	
 	public int getNumChoices(){
