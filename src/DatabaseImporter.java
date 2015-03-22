@@ -37,13 +37,12 @@ public class DatabaseImporter {
 	} 
 	
 	/*goes through and gets the questions, for a given test_id.... <co>*/
-	public Collection<Question> getQuestions(int test_id) throws SQLException {
+	public static Collection<Question> getQuestions(int test_id) throws SQLException {
 		
 		ArrayList<Question> questions = new ArrayList<Question>();
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
-		ResultSet resultSet = stmt.executeQuery("SELECT question_id, test_id, question_text, question_type, point_value, answer_id FROM questions WHERE test_id = '"
-						+ test_id + "'");
+		ResultSet resultSet = stmt.executeQuery("SELECT question_id, test_id, question_text, question_type, point_value FROM questions WHERE test_id = '"+ test_id + "'");
 	
 		//read in from the database
 		while (resultSet.next()) {
@@ -53,16 +52,16 @@ public class DatabaseImporter {
 			String question_text = resultSet.getString(3);
 			int question_type = resultSet.getInt(4);
 			int point_value = resultSet.getInt(5);
-			int answer_id = resultSet.getInt(6);
 			//add a question
 			
 			if(question_type == 0){
 				System.out.println("Getting Responses for Question: "+ question_id);
 				ArrayList<String> r =  getResponses(exam_id, question_id);
+				int cc = getCorrectChoice(exam_id, question_id);
 				/*MultipleChoiceQuestion now ONLY takes question_text, point_value, an array list of responses and an answer_id
 				 * That being said is answer_id the position of the correct answer? <co> */
 				System.out.println("READ BACK AS: "+r);
-				Question q = new MultipleChoiceQuestion(question_text, point_value, r, answer_id); //causes issue after 4 questions because of the non-exsistant way of telling the actual correct choice
+				Question q = new MultipleChoiceQuestion(question_text, point_value, r, cc); //causes issue after 4 questions because of the non-exsistant way of telling the actual correct choice
 				questions.add(q);
 				System.out.println(q.toString()); //here for debugging
 				
@@ -111,6 +110,32 @@ public class DatabaseImporter {
 		return responses;
 	}
 	
+	/*Called in getQuestions:
+	 * Gets the id of the response id of the correct answer <co>*/
+	public static int getCorrectChoice(int exam_id, int question_id) throws SQLException{
+		int response_id = 0;
+		String response_text;
+		getDatabaseConnection();
+		Statement stmt = conn.createStatement();
+		 
+		ResultSet resultSet = stmt.executeQuery("SELECT response_id, response_text FROM questions q, responses r WHERE q.test_id = '"+ exam_id +"' AND q.question_id ='"+question_id+"' AND  r.question_id = q.question_id AND r.test_id = q.test_id AND r.is_answer = 1");
+		try {
+			while (resultSet.next()) {
+				response_id = resultSet.getInt(1);
+				response_text = resultSet.getString(2);
+				System.out.println("Answer:"+ response_text +" -----AnswerID: "+ response_id);
+			}
+		} catch (SQLException e) {
+
+			System.out.println("Problem saving from DB: in getCorrectChoice");
+			e.printStackTrace();
+		}
+		return response_id;
+	
+	}
+	
+	
+	
 	/*Hypothetically will give the correct response (ie Answer Key)
 	 * When a response is_answer is equal to 1, then that get added to the an arraylist of 
 	 * answers <co>*/
@@ -134,7 +159,7 @@ public class DatabaseImporter {
 			}
 		} catch (SQLException e) {
 
-			System.out.println("Problem saving from DB");
+			System.out.println("Problem saving from DB: getAnswers");
 			e.printStackTrace();
 		}
 
@@ -143,6 +168,94 @@ public class DatabaseImporter {
 		
 		
 	}
+	
+	/*Used in AdminGUI to see if a ID is in the db <co>*/
+	public static boolean isAdminID(int givenID) throws SQLException{
+		int admin_id = -1;
+		getDatabaseConnection();
+		Statement stmt = conn.createStatement();
+		 
+		ResultSet resultSet = stmt.executeQuery("SELECT admin_id FROM admin WHERE  admin_id = '"+ givenID+"'");
+		
+		try {
+			while (resultSet.next()) {
+				admin_id = resultSet.getInt(1); 
+			}
+		} catch (SQLException e) {
+
+			System.out.println("Problem saving from DB: isAdminID");
+			e.printStackTrace();
+		}
+
+		boolean isAdmin = admin_id != -1;
+		return isAdmin;
+	}
+	
+	/*used in ClassesGUI: to get the list of classes <co>*/
+	public static ArrayList<String> getClasses(int admin_id) throws SQLException{
+		
+		ArrayList<String> classes = new ArrayList<String>();
+		getDatabaseConnection();
+		Statement stmt = conn.createStatement();
+		 
+		ResultSet resultSet = stmt.executeQuery("SELECT c_name FROM classes c, admin a WHERE  a.admin_id = '"+ admin_id+"' AND c.admin_id ='" +admin_id +"' AND c.is_active = 1");
+		
+		try {
+			while (resultSet.next()) {
+				String c = resultSet.getString(1);			
+				classes.add(c);
+			}
+		} catch (SQLException e) {
+
+			System.out.println("Problem saving from DB: in getClasses");
+			e.printStackTrace();
+		}
+		return classes;
+	}
+	
+	/*Used in TestGUI: to get list of tests <co>*/
+	public static ArrayList<String> getTestNames(String class_name) throws SQLException{
+		
+		ArrayList<String> test_names = new ArrayList<String>();
+		getDatabaseConnection();
+		Statement stmt = conn.createStatement();
+		 
+		ResultSet resultSet = stmt.executeQuery("SELECT test_name FROM tests t, classes c WHERE c.c_name = '"+ class_name+"' AND  t.class_id = c.class_id AND t.is_active = 1");
+		
+		try {
+			while (resultSet.next()) {
+				String t = resultSet.getString(1);			
+				test_names.add(t);
+			}
+		} catch (SQLException e) {
+
+			System.out.println("Problem saving from DB: in getTestNames");
+			e.printStackTrace();
+		}
+		return test_names;
+	}
+	
+	/*used in TestGUI: to call getQuestions <co>*/
+	public static int getTestID(String test_name) throws SQLException{
+		int test_id = 0;
+		getDatabaseConnection();
+		Statement stmt = conn.createStatement();
+		 
+		ResultSet resultSet = stmt.executeQuery("SELECT test_id FROM tests  WHERE test_name = '"+ test_name+"'");
+		
+		try {
+			while (resultSet.next()) {
+				test_id = resultSet.getInt(1);			
+			}
+		} catch (SQLException e) {
+
+			System.out.println("Problem saving from DB: in getTestNames");
+			e.printStackTrace();
+		}
+		return test_id;
+		
+	}
+	
 	
 	
 /* public static void main(String args[]) throws SQLException {

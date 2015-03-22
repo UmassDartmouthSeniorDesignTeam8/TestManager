@@ -36,7 +36,9 @@ public class MultipleChoiceQuestion extends Question {
 
 	public MultipleChoiceQuestion(String questionText, int pointValue, ArrayList<String> choices, int correctChoice) {
 		super(questionText, pointValue);
-		if (choices.size() > MAX_RESPONSES || correctChoice > choices.size()) //logic
+		/*with the second part of the if I cannot think of a way to make that work... <co>*/
+		//if (choices.size() > MAX_RESPONSES || correctChoice > choices.size()) //logic
+		if (choices.size() > MAX_RESPONSES)
 			throw new IllegalArgumentException(
 					"Multiple choice questions may have no more than "
 							+ MAX_RESPONSES
