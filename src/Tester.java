@@ -7,7 +7,7 @@ import javax.swing.filechooser.FileFilter;
 
 
 public class Tester {
-
+/*
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 //		Exam e = ExamGenerator.getExam();
@@ -45,6 +45,13 @@ public class Tester {
 			for (Response r: res)
 				System.out.println(r);
 		}
+	}
+	*/
+	
+	public static void main(String args[]){
+		Exam e = ExamGenerator.getExam();
+		HTMLGeneratorJS gen = new HTMLGeneratorJS(e);
+		gen.generateHTML("C:\\Users\\Shawnski\\Desktop\\JSOutput", true);		
 	}
 
 }

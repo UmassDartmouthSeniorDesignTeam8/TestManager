@@ -76,7 +76,7 @@ public class QRCodeHandler
 					int response, int size){
 		try{
 			QRCodeWriter writer = new QRCodeWriter();
-			String contents = "v" + version + "e" + exam + "s" + student + "q" + question + "a" + response;
+			String contents = getQRCodeContents(version, exam, student, question, response, size);
 			BitMatrix image = writer.encode(contents, BarcodeFormat.QR_CODE, size, size);
 
 			MatrixToImageWriter.writeToPath(image, "GIF", Paths.get(filePath));
@@ -84,6 +84,10 @@ public class QRCodeHandler
 		} catch (Exception e){
 			return false;
 		} 
+	}
+	
+	public static String getQRCodeContents(int version, int exam, int student, int question, int response){
+		return "v" + version + "e" + exam + "s" + student + "q" + question + "a" + response;
 	}
 
 	public static boolean GenerateBarCode(String imagepath, String contents, int size){

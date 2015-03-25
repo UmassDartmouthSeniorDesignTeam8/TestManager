@@ -33,5 +33,5 @@ public class examChoosenPanel extends JPanel {
 	public void clear(){
 		examNumberTextField.setText("");
 	}
-	
+
 }
