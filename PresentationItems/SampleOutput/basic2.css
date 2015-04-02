@@ -1,0 +1,77 @@
+body{
+		font-family: Trebuchet;
+	}
+
+	.questionFrame{
+		width: 511pt;
+		border: solid black 1px;
+		margin-bottom: 5px;
+		page-break-inside: avoid;
+	}
+	
+	.qrCode{
+		display: inline-block;
+		float: left;
+		/*max-height: 40px;*/
+		vertical-align: middle;
+	}
+	
+	.responseImageFrame{
+		vertical-align: top;
+		display: inline-block;
+		padding-left: 15pt;
+	}
+	
+	.responseFrame{
+		vertical-align: top;
+		/* min-height: 40px; */
+		position: relative;
+	}
+	
+	.response-text::before{
+		content: " ";
+		display: inline-block;
+		/*height: 100%;*/
+		width: 1%;
+		vertical-align: middle;
+	}
+	
+	.responseText{
+		display: inline-block;
+		/* min-height: 40px; */
+		max-width: 450pt;
+	}
+	
+	.responseText p{
+		margin-top: 6px;
+		display: inline-block;
+		vertical-align: middle;
+	}
+	
+	.hangingIndent{
+		text-indent: -20px;
+		padding-left: 20px;
+	}
+	
+	.responseLetter{
+		font-style: normal;
+		font-weight: bold;
+	}
+
+	.responseLetter::after{
+		content: ". ";
+	}
+	
+	.questionNumber{
+		font-style: normal;
+		
+	}
+	
+	.pointValue{
+		float: right;
+		margin-right: 4px;
+	}
+	
+	.questionText{
+		margin-left: 5px;
+	}

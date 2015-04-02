@@ -76,7 +76,7 @@ public class QRCodeHandler
 					int response, int size){
 		try{
 			QRCodeWriter writer = new QRCodeWriter();
-			String contents = getQRCodeContents(version, exam, student, question, response, size);
+			String contents = getQRCodeContents(version, exam, student, question, response);
 			BitMatrix image = writer.encode(contents, BarcodeFormat.QR_CODE, size, size);
 
 			MatrixToImageWriter.writeToPath(image, "GIF", Paths.get(filePath));

@@ -118,7 +118,7 @@ public class HTMLGenerator {
 						if (questions[q] instanceof MultipleChoiceQuestion){
 							for (int i=0; i<((MultipleChoiceQuestion) questions[q]).getNumChoices(); i++){
 								String fileName = getQRCodePath(s, q, i);
-								QRCodeHandler.generateQRCode(getQRCodePath(s,q,i), 1, exam.getExamID(), s, q, i, 58);
+								QRCodeHandler.generateQRCode(getQRCodePath(s,q,i), 1, exam.getExamID(), s, q, i, 28);
 							}
 						}
 					}
@@ -152,7 +152,7 @@ public class HTMLGenerator {
 		String working = "<div class = \"questionFrame multipleChoiceQuestionFrame\">\n" +
 						 "<div class = \"questionTextFrame multipleChoiceQuestionTextFrame\">\n" +
 						 "<p class = \"questionText multipleChoiceQuestionText\">\n" +
-						 "<em class = \"questionNumber\">" + questionNum + ". </em>" +
+						 "<em class = \"questionNumber\">" + (questionNum+1) + ". </em>" +
 						 questions[questionNum].getQuestionText() + 
 						 "<em class = \"pointValue\">(" + questions[questionNum].getPointValue() + " points)</em></p>\n</div>";
 		String[] choices = q.getChoices();

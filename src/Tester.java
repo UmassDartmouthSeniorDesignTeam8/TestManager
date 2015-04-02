@@ -50,8 +50,8 @@ public class Tester {
 	
 	public static void main(String args[]){
 		Exam e = ExamGenerator.getExam();
-		HTMLGeneratorJS gen = new HTMLGeneratorJS(e);
-		gen.generateHTML("C:\\Users\\Shawnski\\Desktop\\JSOutput", true);		
+		HTMLGenerator gen = new HTMLGenerator(e);
+		gen.generateHTML("C:\\Users\\Shawnski\\Desktop\\SampleOutput", true);		
 	}
 
 }
