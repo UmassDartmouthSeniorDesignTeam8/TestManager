@@ -50,4 +50,10 @@ public class ExamGenerator {
 		e.addQuestion(question3);
 		return e;
 	}
+	
+	public static void main(String args[]){
+		Exam e = getExam();
+		HTMLGenerator gen = new HTMLGenerator(e);
+		gen.generateHTML("C:\\Orion\\", true);
+	}
 }
