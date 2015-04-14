@@ -2,6 +2,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 
+import com.google.zxing.NotFoundException;
 import com.google.zxing.ResultPoint;
 /* Alyssa Tavares 
  * Orion
@@ -21,13 +22,20 @@ public class QRStringInterpreter
 	private static ArrayList<ResultPoint[]> points; // array of the coordinates for each QRCode
 
 	// changed return type so other classes can use the results <sb>
-	public static ArrayList<Response> interpret(File examFile) throws Exception
+	public static ArrayList<Response> interpret(File examFile)
 	{
 		// convert the PDF to an image
 		PDFtoImage converter = new PDFtoImage(); // create new converter object
 		// array that holds all the bufferedimage pages of the exam
 		
-		BufferedImage[] exam = converter.convert(examFile); // call to convert the PDF
+		BufferedImage[] exam;
+		try {
+			exam = converter.convert(examFile);
+		} catch (Exception e1) {
+			System.out.println("Error converting from pdf.");
+			e1.printStackTrace();
+			return null;
+		} // call to convert the PDF
 		// returned from convert is an array of bufferedimages which are the pages of the exam
 		
 		/* Outside loop: iterates through the pages of the exam
@@ -35,38 +43,42 @@ public class QRStringInterpreter
 		 */
 		for(int k = 0; k < exam.length; k++)
 		{
-			qrStrings = QRCodeHandler.readAllCodes(exam[k]);
-			points = QRCodeHandler.getCoordinates();
+			try{
+				qrStrings = QRCodeHandler.readAllCodes(exam[k]);
+				points = QRCodeHandler.getCoordinates();
 
-			/* qrStrings is an array of all the qrcode strings
-			 * the following loop goes through each of the strings and breaks them up
-			 * with each piece of information, a new Response is created for each qrCode
-			 */
-			for(int i = 0; i < qrStrings.length; i++)
-			{								
-				String[] sep = qrStrings[i].split("v");
-				// splits into two parts: [0] before the v (empty) and [1] which is the rest of the string
-				
-				String[] sep2 = sep[1].split("e");
-				versionNum = Integer.parseInt(sep2[0]); // the actual versionNum just numbers
-				
-				String[] sep3 = sep2[1].split("s");
-				examID = Integer.parseInt(sep3[0]); // the actual examID just numbers
-				
-				String[] sep4 = sep3[1].split("q");
-				studentID = Integer.parseInt(sep4[0]); // the actual studentID just numbers
-				
-				String[] sep5 = sep4[1].split("a");
-				questionNum = Integer.parseInt(sep5[0]); // the actual questionNum just numbers
-				
-				answerNum = Integer.parseInt(sep5[1]); // the actual answerNum just numbers
-				
-				// create each Response in the arrayList
-				responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k, points.get(x)));
-				x++; // increase to the next set of coordinates for the next qrcode read on the exam
-				
-				}
+				/* qrStrings is an array of all the qrcode strings
+				 * the following loop goes through each of the strings and breaks them up
+				 * with each piece of information, a new Response is created for each qrCode
+				 */
+				for(int i = 0; i < qrStrings.length; i++)
+				{								
+					String[] sep = qrStrings[i].split("v");
+					// splits into two parts: [0] before the v (empty) and [1] which is the rest of the string
+					
+					String[] sep2 = sep[1].split("e");
+					versionNum = Integer.parseInt(sep2[0]); // the actual versionNum just numbers
+					
+					String[] sep3 = sep2[1].split("s");
+					examID = Integer.parseInt(sep3[0]); // the actual examID just numbers
+					
+					String[] sep4 = sep3[1].split("q");
+					studentID = Integer.parseInt(sep4[0]); // the actual studentID just numbers
+					
+					String[] sep5 = sep4[1].split("a");
+					questionNum = Integer.parseInt(sep5[0]); // the actual questionNum just numbers
+					
+					answerNum = Integer.parseInt(sep5[1]); // the actual answerNum just numbers
+					
+					// create each Response in the arrayList
+					responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k, points.get(x)));
+					x++; // increase to the next set of coordinates for the next qrcode read on the exam
+					
+					}
+			} catch (NotFoundException e){
+				System.out.println("No barcodes found on page " + k);
 			}
+		}
 			return responses;
 		}
 	
