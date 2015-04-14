@@ -58,10 +58,11 @@ public class DatabaseImporter {
 				System.out.println("Getting Responses for Question: "+ question_id);
 				ArrayList<String> r =  getResponses(exam_id, question_id);
 				int cc = getCorrectChoice(exam_id, question_id);
+				int nc = getNumChoices(exam_id, question_id);
 				/*MultipleChoiceQuestion now ONLY takes question_text, point_value, an array list of responses and an answer_id
 				 * That being said is answer_id the position of the correct answer? <co> */
 				System.out.println("READ BACK AS: "+r);
-				Question q = new MultipleChoiceQuestion(question_text, point_value, r, cc); //causes issue after 4 questions because of the non-exsistant way of telling the actual correct choice
+				Question q = new MultipleChoiceQuestion(question_text, point_value, r, cc, nc); //causes issue after 4 questions because of the non-exsistant way of telling the actual correct choice
 				questions.add(q);
 				System.out.println(q.toString()); //here for debugging
 				
@@ -134,7 +135,24 @@ public class DatabaseImporter {
 	
 	}
 	
-	
+	/*Is called by getQuestions to get the number of responses for the mc questions only
+	 * I don't understand. This works but something like it shouldn't be compared to the response_id
+	 * possibly I don't know. <co>*/
+	public static int getNumChoices(int exam_id, int question_id) throws SQLException{
+		int numChoice = 0;
+		getDatabaseConnection();
+		Statement stmt = conn.createStatement();
+		ResultSet resultSet = stmt.executeQuery("SELECT COUNT(*) FROM responses WHERE question_id = '"
+						+ question_id + "' AND test_id = '"+ exam_id + "'");
+		
+		//read in from the database
+		while (resultSet.next()) {
+			//System.out.println("setting info from the db"); //debugging
+			numChoice = resultSet.getInt(1);
+			System.out.println("Num Responses: "+ numChoice); // testing
+		}
+				return numChoice;
+	}
 	
 	/*Hypothetically will give the correct response (ie Answer Key)
 	 * When a response is_answer is equal to 1, then that get added to the an arraylist of 
@@ -175,7 +193,7 @@ public class DatabaseImporter {
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
 		 
-		ResultSet resultSet = stmt.executeQuery("SELECT admin_id FROM admin WHERE  admin_id = '"+ givenID+"'");
+		ResultSet resultSet = stmt.executeQuery("SELECT id FROM admin WHERE  id = '"+ givenID+"'");
 		
 		try {
 			while (resultSet.next()) {
@@ -198,7 +216,7 @@ public class DatabaseImporter {
 		getDatabaseConnection();
 		Statement stmt = conn.createStatement();
 		 
-		ResultSet resultSet = stmt.executeQuery("SELECT c_name FROM classes c, admin a WHERE  a.admin_id = '"+ admin_id+"' AND c.admin_id ='" +admin_id +"' AND c.is_active = 1");
+		ResultSet resultSet = stmt.executeQuery("SELECT c_name FROM classes c, admin a WHERE  a.id = '"+ admin_id+"' AND c.admin_id ='" +admin_id +"' AND c.is_active = 1");
 		
 		try {
 			while (resultSet.next()) {
@@ -256,8 +274,7 @@ public class DatabaseImporter {
 		
 	}
 	
-	
-	
+
 /* public static void main(String args[]) throws SQLException {
 
 		DatabaseImporter di= new DatabaseImporter();

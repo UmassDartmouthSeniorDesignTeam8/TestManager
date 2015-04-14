@@ -35,16 +35,6 @@ public class AdminGUI extends JFrame {
 		add(adminIDPanel, BorderLayout.CENTER);
 		add(buttonPanel, BorderLayout.SOUTH);
 
-		try {
-			UIManager
-					.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-			SwingUtilities.updateComponentTreeUI(this);
-		} catch (Exception e) {
-			JOptionPane.showMessageDialog(null,
-					"Error setting the look and feel.");
-			System.exit(0);
-		}
-
 		pack();
 		setSize(WIDTH, HEIGHT);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -71,7 +61,6 @@ public class AdminGUI extends JFrame {
 			try {
 				int admin_id = adminIDPanel.getadminID();
 				if (DatabaseImporter.isAdminID(admin_id)) {
-//((AdminGUI)this).setVisible(false);
 					// calls classPanel
 					new ClassesGUI(admin_id).setVisible(true);
 					

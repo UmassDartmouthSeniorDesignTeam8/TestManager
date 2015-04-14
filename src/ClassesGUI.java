@@ -27,7 +27,6 @@ public class ClassesGUI extends JFrame{
 				String classPicked = (String) availableClasses.getSelectedItem();
 				try {
 					new TestGUI(classPicked).setVisible(true);
-					
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
