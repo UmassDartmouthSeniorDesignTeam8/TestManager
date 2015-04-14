@@ -80,7 +80,7 @@ public class HTMLGenerator {
 	protected void generateSingleCopyOfExam(int studentNum, String fileLocation){
 		PrintWriter outputFile;
 		try{
-			outputFile = new PrintWriter(fileLocation);
+			outputFile = new PrintWriter(new File(fileLocation));
 			System.out.println(fileLocation);
 		} catch (Exception e){
 			System.out.println("Error generating exam for student " + studentNum);

@@ -18,8 +18,8 @@ import java.nio.channels.ReadableByteChannel;
 public class PDFtoImage
 { 
 	private static BufferedImage[] bufferedImages;
-	
-    protected BufferedImage[] convert(File pdf) throws Exception 
+	// converted to static so it can be called without making an object <sb>
+    public static BufferedImage[] convert(File pdf) throws Exception 
     {
         //  load a pdf from a file
         RandomAccessFile raf = new RandomAccessFile(pdf, "r");
@@ -61,25 +61,26 @@ public class PDFtoImage
             g.dispose();
             
         }
+        raf.close();
 		return bufferedImages;
     }
  
-    public static void main(String[] args) 
-    {
-        PDFtoImage converter = new PDFtoImage(); // create converter
-        
-        File exam = new File("exam.pdf"); // pdf file you want to convert
-        try {
-            converter.convert(exam); // call to converter method and pass pdf file
-        } catch (Exception ex) 
-        {
-            ex.printStackTrace();
-        }
-        
-        // display JPEG (not necessary just wanted to make sure it works)
-        ImageViewer viewer = new ImageViewer();
-        for(int i = 0; i < bufferedImages.length; i++) {
-        	viewer.displayImage(bufferedImages[i]);
-        }
-    }
+//    public static void main(String[] args) 
+//    {
+//        PDFtoImage converter = new PDFtoImage(); // create converter
+//        
+//        File exam = new File("exam.pdf"); // pdf file you want to convert
+//        try {
+//            converter.convert(exam); // call to converter method and pass pdf file
+//        } catch (Exception ex) 
+//        {
+//            ex.printStackTrace();
+//        }
+//        
+//        // display JPEG (not necessary just wanted to make sure it works)
+////        ImageViewer viewer = new ImageViewer();
+////        for(int i = 0; i < bufferedImages.length; i++) {
+////        	viewer.displayImage(bufferedImages[i]);
+////        }
+//    }
 }
