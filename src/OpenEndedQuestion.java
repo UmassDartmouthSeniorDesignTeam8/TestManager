@@ -16,5 +16,10 @@ public class OpenEndedQuestion extends Question {
 	public String getSampleResponse(){
 		return sampleResponse;
 	}
+	
+	@Override
+	public int getNumChoices(){
+		return 0;
+	}
 
 }

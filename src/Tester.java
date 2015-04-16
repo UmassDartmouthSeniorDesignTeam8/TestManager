@@ -49,9 +49,11 @@ public class Tester {
 	*/
 	
 	public static void main(String args[]){
-		Exam e = ExamGenerator.getExam();
-		HTMLGenerator gen = new HTMLGenerator(e);
-		gen.generateHTML("C:\\Users\\Shawnski\\Desktop\\SampleOutput", true);		
+//		Exam e = ExamGenerator.getExam();
+//		HTMLGenerator gen = new HTMLGenerator(e);
+//		gen.generateHTML("C:\\Users\\Shawnski\\Desktop\\SampleOutput", true);	
+		AdminGUI test = new AdminGUI();
+		
 	}
 
 }
