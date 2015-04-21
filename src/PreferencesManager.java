@@ -90,23 +90,28 @@ public class PreferencesManager {
 	}
 	
 	public static String getFilePath() {
+		getInstance();
 		return singleton.filePath;
 	}
 	public void setFilePath(String filePath) {
+		getInstance();
 		singleton.filePath = filePath;
 		savePreferences();
 	}
 	public int getQrCodeSize() {
-		return qrCodeSize;
+		getInstance();
+		return singleton.qrCodeSize;
 	}
 	public void setQrCodeSize(int qrCodeSize) {
+		getInstance();
 		singleton.qrCodeSize = qrCodeSize;
 		savePreferences();
 	}
 	
 	private static void loadDefaultPreferences(){
+		getInstance();
 		qrCodeSize = 52;
 		filePath = 	Paths.get("data/").toAbsolutePath().toString();
 		savePreferences();
-	}	
+	}
 }

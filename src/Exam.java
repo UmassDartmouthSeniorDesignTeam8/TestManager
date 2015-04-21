@@ -1,5 +1,6 @@
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -92,6 +93,14 @@ public class Exam implements Serializable {
 		/* should set the qr code for the question */
 		//q.setQuestionQRCode(this.getName(), in, SIZE);
 
+	}
+	
+	public String toString(){
+		String result =  "Exam: " + name + " - " + course.getNumStudents() + " students\n";
+		for (Question q: questions){
+			result+=q + "\n";
+		}
+		return result;
 	}
 
 //	public void generateExamDocument(String filepath) {

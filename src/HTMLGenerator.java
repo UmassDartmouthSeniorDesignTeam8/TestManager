@@ -59,6 +59,10 @@ public class HTMLGenerator {
 	 * @param isRandomized - Determines whether or not each exam will have a random question ordering
 	 */
 	public void generateHTML(String fileDirectory, boolean isRandomized){
+		generateHTML(fileDirectory, isRandomized, exam.getCourse().getNumStudents());
+	}
+	
+	public void generateHTML(String fileDirectory, boolean isRandomized, int numberOfExams){
 		this.fileDirectory = fileDirectory;
 		// Randomize if needed; otherwise stock the questions array with the normal ordering
 		this.generateQuestionOrderings(isRandomized);
@@ -104,7 +108,7 @@ public class HTMLGenerator {
 			File newDirectory = new File(fileDirectory + "\\images\\");
 			System.out.println(newDirectory);
 			if (!newDirectory.mkdirs()){
-				System.out.println("Could not create images directory");
+				//System.out.println("Could not create images directory");
 			}
 		} catch (Exception e){
 			System.out.println("Error generating images directory. " + e.getMessage());

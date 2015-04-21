@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Scanner;
 
 
 public class ExamGenerator {
@@ -51,9 +52,45 @@ public class ExamGenerator {
 		return e;
 	}
 	
+	public static Exam commandLine(){
+		String question, response;
+		Scanner input = new Scanner(System.in);
+		Course crs = new Course("Sample Course", "Instructor Name", "Spring 2015");
+		crs.addStudent(new Student("Student A"));
+		crs.addStudent(new Student("Student B"));
+		crs.addStudent(new Student("Student C"));
+		crs.addStudent(new Student("Student D"));
+		crs.addStudent(new Student("Student E"));
+		Exam e = new Exam("Sample Exam", new Date(), "", crs);
+		do{
+			System.out.print("Enter question text or . to exit: ");
+			question = input.nextLine();
+			ArrayList<String> responses = new ArrayList<String>();
+			int correct = 0;
+			if (!question.equals(".")){
+				responses = new ArrayList<String>();
+				int count = 0;
+				do{
+					System.out.print("Enter response " + (count) + ": ");
+					response = input.nextLine();
+					if (!response.equals(".")){
+						responses.add(response);
+					}
+				} while (!response.equals(".")&&++count<10);
+				System.out.print("Correct response #: ");
+				correct = input.nextInt();
+				input.nextLine();
+				MultipleChoiceQuestion q = new MultipleChoiceQuestion(question, 5, responses, correct);
+				e.addQuestion(q);
+			}			
+		} while (!question.equals("."));
+		return e;
+	}
+	
 	public static void main(String args[]){
-		Exam e = getExam();
+		Exam e = commandLine();
+		System.out.println(e);
 		HTMLGenerator gen = new HTMLGenerator(e);
-		gen.generateHTML("C:\\Orion\\", true);
+		gen.generateHTML("C:\\Orion\\cmdSample", true);
 	}
 }
