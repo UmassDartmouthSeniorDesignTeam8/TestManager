@@ -1,3 +1,8 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -92,5 +97,26 @@ public class ExamGenerator {
 		System.out.println(e);
 		HTMLGenerator gen = new HTMLGenerator(e);
 		gen.generateHTML("C:\\Orion\\cmdSample", true);
+		FileOutputStream fout = null;
+		try {
+			File parent = new File("C:\\Orion\\exams\\");
+			parent.mkdirs();
+			fout = new FileOutputStream("C:\\Orion\\exams\\e"+e.getExamID());
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(e);
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e2){
+			e2.printStackTrace();
+		} finally {
+			try {
+				fout.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		
 	}
 }
