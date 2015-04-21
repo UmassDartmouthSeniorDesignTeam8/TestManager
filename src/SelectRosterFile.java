@@ -12,17 +12,23 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileFilter;
+
+import com.opencsv.CSVReader;
+
 import net.miginfocom.swing.MigLayout;
+
 import java.awt.Toolkit;
 import java.awt.Font;
+import java.awt.Window.Type;
+import java.awt.Dialog.ModalExclusionType;
 
-
-public class SelectRosterFile extends JDialog {
+public class SelectRosterFile extends JFrame {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
@@ -34,25 +40,24 @@ public class SelectRosterFile extends JDialog {
 	public static void main(String[] args) {
 		try {
 			SelectRosterFile dialog = new SelectRosterFile();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public JComboBox getComboBox(){
+	public JComboBox getComboBox() {
 		return comboBox;
 	}
-	
-	
-	
+
 	/**
 	 * Create the dialog.
 	 */
 	public SelectRosterFile() {
-		//make this line universal some how... 
-		setIconImage(Toolkit.getDefaultToolkit().getImage("C:\\Users\\Caitlyn\\Documents\\GitHub\\TestManager\\orion_cat.png"));
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		// make this line universal some how...
+		setIconImage(Toolkit.getDefaultToolkit().getImage(
+				SelectRosterFile.class.getResource("/resources/orion_cat.png")));
 		setBackground(Color.DARK_GRAY);
 		getContentPane().setBackground(Color.DARK_GRAY);
 		getContentPane().setForeground(Color.BLACK);
@@ -62,8 +67,9 @@ public class SelectRosterFile extends JDialog {
 		contentPanel.setBackground(Color.DARK_GRAY);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
-		contentPanel.setLayout(new MigLayout("", "[81px][179px][89px][]", "[23px][20px][][][][]"));
-		
+		contentPanel.setLayout(new MigLayout("", "[81px][179px][89px][]",
+				"[23px][20px][][][][]"));
+
 		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setBackground(Color.DARK_GRAY);
@@ -74,24 +80,26 @@ public class SelectRosterFile extends JDialog {
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						int idx = getComboBox().getSelectedIndex();
-						
+
 						File f = new File(textField.getText());
-						
+
 						try {
-							BufferedReader r = new BufferedReader(new FileReader(f));
-							String header = r.readLine();
-							
-							String line;
-							while ((line = r.readLine()) != null) {
-								StringTokenizer t = new StringTokenizer(line, ",");
-								String val = "";
-								for (int i=0; i<=idx; i++) {
-									val = t.nextToken();
-								}
-								System.out.println("Store value: " + val);
+							CSVReader reader = new CSVReader(new FileReader(f));
+
+							String[] nextLine = reader.readNext(); // skip
+																	// header
+																	// line
+
+							while ((nextLine = reader.readNext()) != null) {
+								String value = nextLine[idx];
+								System.out.println("value is: >" + value + "<");
+
+								Student student = new Student(value);
+								/* Shawn fill in <co> */
+								// addStudent(student);
+
 							}
-						}
-						catch (Exception e) {
+						} catch (Exception e) {
 							e.printStackTrace();
 						}
 					}
@@ -100,68 +108,66 @@ public class SelectRosterFile extends JDialog {
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
 			}
-		
-		JLabel lblNewLabel = new JLabel("Select CSV File:");
-		lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNewLabel.setForeground(Color.ORANGE);
-		contentPanel.add(lblNewLabel, "cell 0 2,growx,aligny center");
-		lblNewLabel.setLabelFor(textField);
-		
-		textField = new JTextField();
-		contentPanel.add(textField, "cell 1 2,growx,aligny center");
-		textField.setColumns(10);
-		
-		JButton btnNewButton = new JButton("Browse");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser chooser = new JFileChooser(textField.getText());
-				chooser.addChoosableFileFilter(new FileFilter() {
 
-					@Override
-					public boolean accept(File arg0) {
-						return arg0.isDirectory() || arg0.getName().endsWith(".csv");
-					}
+			JLabel lblNewLabel = new JLabel("Select CSV File:");
+			lblNewLabel.setFont(new Font("Tahoma", Font.BOLD, 11));
+			lblNewLabel.setForeground(Color.ORANGE);
+			contentPanel.add(lblNewLabel, "cell 0 2,growx,aligny center");
+			lblNewLabel.setLabelFor(textField);
 
-					@Override
-					public String getDescription() {
-						return "(*.csv) Roster Files";
-					}
-					
-				});
-				if (chooser.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
-					File f = chooser.getSelectedFile();
-					textField.setText(f.getPath());
-					
-					try {
-						BufferedReader r = new BufferedReader(new FileReader(f));
-						String header = r.readLine();
-						StringTokenizer t = new StringTokenizer(header, ",");
-						getComboBox().removeAllItems();
-						while (t.hasMoreTokens()) {
-							String columnName = t.nextToken();
-							getComboBox().addItem(columnName);	
+			textField = new JTextField();
+			contentPanel.add(textField, "cell 1 2,growx,aligny center");
+			textField.setColumns(10);
+
+			JButton btnNewButton = new JButton("Browse");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					JFileChooser chooser = new JFileChooser(textField.getText());
+					chooser.addChoosableFileFilter(new FileFilter() {
+
+						@Override
+						public boolean accept(File arg0) {
+							return arg0.isDirectory()
+									|| arg0.getName().endsWith(".csv");
+						}
+
+						@Override
+						public String getDescription() {
+							return "(*.csv) Roster Files";
+						}
+
+					});
+					if (chooser.showOpenDialog(contentPanel) == JFileChooser.APPROVE_OPTION) {
+						File f = chooser.getSelectedFile();
+						textField.setText(f.getPath());
+
+						try {
+							BufferedReader r = new BufferedReader(
+									new FileReader(f));
+							String header = r.readLine();
+							StringTokenizer t = new StringTokenizer(header, ",");
+							getComboBox().removeAllItems();
+							while (t.hasMoreTokens()) {
+								String columnName = t.nextToken();
+								getComboBox().addItem(columnName);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
-					catch (Exception e) {
-						e.printStackTrace();
-					}
 				}
-			}
-		});
-		contentPanel.add(btnNewButton, "cell 2 2,growx,aligny top");
-		
-		JLabel lblNewLabel_1 = new JLabel("Field to Save:");
-		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblNewLabel_1.setForeground(Color.ORANGE);
-		contentPanel.add(lblNewLabel_1, "cell 0 5,alignx right,aligny center");
-		lblNewLabel_1.setLabelFor(getComboBox());
-		
-		contentPanel.add(getComboBox(), "cell 1 5,growx,aligny top");
-		{
-				JButton cancelButton = new JButton("Cancel");
-				cancelButton.setActionCommand("Cancel");
-				buttonPane.add(cancelButton);
-			}
+			});
+			contentPanel.add(btnNewButton, "cell 2 2,growx,aligny top");
+
+			JLabel lblNewLabel_1 = new JLabel("Field to Save:");
+			lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 11));
+			lblNewLabel_1.setForeground(Color.ORANGE);
+			contentPanel.add(lblNewLabel_1,
+					"cell 0 5,alignx right,aligny center");
+			lblNewLabel_1.setLabelFor(getComboBox());
+
+			contentPanel.add(getComboBox(), "cell 1 5,growx,aligny top");
 		}
 	}
+
 }
