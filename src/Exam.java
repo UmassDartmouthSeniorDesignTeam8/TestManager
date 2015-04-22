@@ -18,12 +18,13 @@ public class Exam implements Serializable {
 	private Date date;
 	private String coverPageInstructions;
 	private Course course;
-	private static ArrayList<Question> questions;
+	private ArrayList<Question> questions;
 	private int exam_id;
+	private int num_Printed;
 	
 	
 	public Exam(String name, Date date, String coverPageInstructions,
-			Course course) {
+			Course course, int exam_id) {
 		super();
 		this.name = name;
 		this.date = date;
@@ -92,7 +93,6 @@ public class Exam implements Serializable {
 		String in = Integer.toString(questions.size() - 1);
 		/* should set the qr code for the question */
 		//q.setQuestionQRCode(this.getName(), in, SIZE);
-
 	}
 	
 	public String toString(){
@@ -101,6 +101,17 @@ public class Exam implements Serializable {
 			result+=q + "\n";
 		}
 		return result;
+	}
+	
+	public void setNumberPrinted(int numPrinted){
+		this.num_Printed = numPrinted;
+	}
+	
+	public int getNumPrinted(){
+		if (num_Printed<course.getNumStudents())
+			return course.getNumStudents();
+		else
+			return num_Printed;
 	}
 
 //	public void generateExamDocument(String filepath) {

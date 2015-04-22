@@ -7,9 +7,11 @@ public class ManualGradeHandler {
 	public final static int NO_QR_CODES_FOUND_FOR_QUESTION = 3;
 	
 	public void addNewOpenResponseItem(int student, int questionNum, Question q, RectangleBoundary boundary){
+		
 	}
 	
 	public void addNewMultipleChoiceItem(int student, int questionNum, Question q, int reasonCode, RectangleBoundary boundary){		
+		System.out.println("Manual Grade Handler: New MC - S" + student + " Q" + questionNum + " - Reason:" + reasonCode);
 	}
 	
 	public void addNewStudentIdentifier(int student, RectangleBoundary boundary){

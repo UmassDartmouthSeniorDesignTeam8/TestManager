@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -22,25 +23,29 @@ import javax.swing.JOptionPane;
  * This class handles preferences, including preferred file
  * directories and QR code size preferences.
  */
-public class PreferencesManager {
+public class PreferencesManager implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7317879850271771653L;
 	public static String filePath;
 	public static int qrCodeSize;
 	private static PreferencesManager singleton;
 	
-	protected PreferencesManager(){
-		if (singleton==null)
-			loadPreferences();
+	private PreferencesManager(){
 	}
 	
 	public static PreferencesManager getInstance(){
 		if (singleton==null)
-			singleton = new PreferencesManager();
+			loadPreferences();
 		return singleton;
 	}
 	
 	// This will attempt to load the preferences file from the running directory. Default are loaded on error.
 	private static void loadPreferences(){
+		if (singleton==null)
+			singleton = new PreferencesManager();
 		ObjectInput object = null;
 		try{
 			InputStream file = new FileInputStream("OrionPreferences.cfg");
@@ -50,14 +55,14 @@ public class PreferencesManager {
 				PreferencesManager mgr = (PreferencesManager)object.readObject();
 				singleton = mgr;
 			} catch (ClassNotFoundException e) {
-				JOptionPane.showMessageDialog(null, "Preferences file not found. Loading default preferences.\n" + e.getMessage());
+				System.out.println( "Preferences file not found. Loading default preferences.\n" + e.getMessage());
 				loadDefaultPreferences();
 			}
 		} catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(null, "Preferences file not found. Loading default preferences.\n" + e.getMessage());
+			System.out.println( "Preferences file not found. Loading default preferences.\n" + e.getMessage());
 			loadDefaultPreferences();
 		} catch (IOException e){
-			JOptionPane.showMessageDialog(null, "Error loading preferences file. Loading default preferences.\n" + e.getMessage());
+			System.out.println( "Error loading preferences file. Loading default preferences.\n" + e.getMessage());
 			loadDefaultPreferences();
 		} finally {
 			if (object!=null)
@@ -79,7 +84,7 @@ public class PreferencesManager {
 			output = new ObjectOutputStream(buffer);
 			output.writeObject(singleton);
 		} catch (IOException e){
-			JOptionPane.showMessageDialog(null, "Error loading preferences file. Loading default preferences.\n"+e.getMessage());
+			System.out.println( "Error loading preferences file. Loading default preferences.\n"+e.getMessage());
 		} finally {
 			try{
 				output.close();
@@ -109,9 +114,8 @@ public class PreferencesManager {
 	}
 	
 	private static void loadDefaultPreferences(){
-		getInstance();
-		qrCodeSize = 52;
-		filePath = 	Paths.get("data/").toAbsolutePath().toString();
-		savePreferences();
+		singleton.qrCodeSize = 58;
+		singleton.filePath = 	Paths.get("data/").toAbsolutePath().toString();
+		singleton.savePreferences();
 	}
 }

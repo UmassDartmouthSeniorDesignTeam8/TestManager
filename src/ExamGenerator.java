@@ -50,7 +50,7 @@ public class ExamGenerator {
 		/*constructor has to match... I don't know why it isn't liking the test name. <co>*/
 		//Exam e = new Exam("Practice Test1", 1);
 		// This constructor is declared; otherwise the date is never specified. <SB>
-		Exam e = new Exam("Practice Exam", new Date(), "", course);
+		Exam e = new Exam("Practice Exam", new Date(), "", course, 12345);
 		e.addQuestion(question1);
 		e.addQuestion(question2);
 		e.addQuestion(question3);
@@ -66,7 +66,7 @@ public class ExamGenerator {
 		crs.addStudent(new Student("Student C"));
 		crs.addStudent(new Student("Student D"));
 		crs.addStudent(new Student("Student E"));
-		Exam e = new Exam("Sample Exam", new Date(), "", crs);
+		Exam e = new Exam("Sample Exam", new Date(), "", crs, (int)Math.random()*30427);
 		do{
 			System.out.print("Enter question text or . to exit: ");
 			question = input.nextLine();
@@ -93,10 +93,11 @@ public class ExamGenerator {
 	}
 	
 	public static void main(String args[]){
-		Exam e = commandLine();
+		Exam e = new ExamGenerator().getExam();
+		e.setNumberPrinted(10);
 		System.out.println(e);
 		HTMLGenerator gen = new HTMLGenerator(e);
-		gen.generateHTML("C:\\Orion\\cmdSample", true);
+		gen.generateSingleHTML("C:\\Orion\\cmdSample", true, 10);
 		FileOutputStream fout = null;
 		try {
 			File parent = new File("C:\\Orion\\exams\\");

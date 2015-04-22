@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 import com.google.zxing.ResultPoint;
 
 /* 
@@ -95,6 +97,14 @@ public class Response
 	public ResultPoint[] getCoordinates()
 	{
 		return coordinates;
+	}
+
+	@Override
+	public String toString() {
+		return "Response [versionNum=" + versionNum + ", examID=" + examID
+				+ ", studentID=" + studentID + ", questionNum=" + questionNum
+				+ ", answerNum=" + answerNum + ", pageNum=" + pageNum
+				+ ", coordinates=" + Arrays.toString(coordinates) + "]";
 	}
 
 }
