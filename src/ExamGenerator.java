@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+/*
+ * This class was exclusively used for testing. It is used to generate
+ * exams either through a static method or through text-based input.
+ */
+
 
 public class ExamGenerator {
 	public static Exam getExam(){

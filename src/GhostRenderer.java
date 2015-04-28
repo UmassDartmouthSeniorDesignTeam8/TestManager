@@ -13,6 +13,10 @@ import org.ghost4j.document.PDFDocument;
 import org.ghost4j.renderer.RendererException;
 import org.ghost4j.renderer.SimpleRenderer;
 
+/*
+ * This was used to test out the G4J pdf rendering library. It is not currently incorporated
+ * due to the large number of dependencies.
+ */
 
 public class GhostRenderer {
 	

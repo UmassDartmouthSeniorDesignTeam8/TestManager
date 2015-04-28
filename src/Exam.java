@@ -1,3 +1,9 @@
+/*
+ * This class holds all the data about an exam. It also functions
+ * as the answer key for an exam and is used to generate the actual exam via
+ * the HTML generator.
+ */
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
@@ -22,7 +28,14 @@ public class Exam implements Serializable {
 	private int exam_id;
 	private int num_Printed;
 	
-	
+	/**
+	 * 
+	 * @param name						Name of the exam
+	 * @param date						Date of the exam
+	 * @param coverPageInstructions		Specific instructions for the cover page
+	 * @param course					Course for which the exam is intended
+	 * @param exam_id					exam ID from the database
+	 */
 	public Exam(String name, Date date, String coverPageInstructions,
 			Course course, int exam_id) {
 		super();
@@ -33,7 +46,9 @@ public class Exam implements Serializable {
 		questions = new ArrayList<Question>();
 	}
 
-	
+	/*
+	 * Simplified constructor only accepts name of the exam and its identifier.
+	 */
 	public Exam(String name, int exam_id){
 		super();
 		this.name= name;
@@ -61,6 +76,7 @@ public class Exam implements Serializable {
 		return exam_id;
 	}
 	
+	// Returns the array of questions, used by other classes
 	public Question[] getQuestionArray(){
 		Question[] results = new Question[questions.size()];
 		questions.toArray(results);

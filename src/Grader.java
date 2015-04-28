@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
+/*
+ * This class compares responses to the answer key (exam class) to generate final grades.
+ * It also pushes items to the manual grade handler so that they may be resolved.
+ */
 public class Grader {
 	public final static int NO_RESPONSE = -2;
 	public final static int UNKNOWN_ANSWER = -1;

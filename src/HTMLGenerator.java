@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+/*
+ * This class generates the HTML for a printed exam from the questions
+ * and information in the exam class. It also generates the QR codes required.
+ */
 
 public class HTMLGenerator {
 	protected Question[] questions;
