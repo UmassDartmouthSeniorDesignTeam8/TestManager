@@ -23,11 +23,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 
 public class QRCodeHandler 
 {
-	// added in these global constants for reference of key things such as version number
-	public final static int QUESTION_MEANS_STUDENT_NAME = -1;
-	public final static int RESPONSE_MEANS_OPEN_RESPONSE = -1;
-	public final static int VERSION_MEANS_HTML_GENERATED = 1;
-	
+	// added in these global constants for reference of key things such as version number	
 	protected static ArrayList<ResultPoint[]> points = new ArrayList<ResultPoint[]>();
 	
 	public static String[] readAllCodes(BufferedImage exam) throws NotFoundException

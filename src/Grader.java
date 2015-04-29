@@ -12,6 +12,7 @@ public class Grader {
 	
 	private Exam exam;
 	private ArrayList<Response> responses;
+	private ArrayList<Response> erroneousResponses;
 	private ManualGradeHandler handler;
 	private int chosenAnswers[][];
 	private int points[][];
@@ -30,6 +31,7 @@ public class Grader {
 		this.handler = h;
 		chosenAnswers = new int[exam.getNumPrinted()][exam.getNumQuestions()];
 		points = new int[exam.getNumPrinted()][exam.getNumQuestions()];
+		erroneousResponses = new ArrayList<Response>();
 	}
 	
 	public void generateGrades(){
@@ -51,10 +53,10 @@ public class Grader {
 		for (Response r: responses){
 			try{
 				// Create item for open response question
-				if (r.getAnswerNum()==QRCodeHandler.RESPONSE_MEANS_OPEN_RESPONSE)
+				if (r.isOpenResponse())
 					handler.addNewOpenResponseItem(r.getStudentID(), r.getQuestionNum(), questions[r.getQuestionNum()], new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
 				// Create item when student's name barcode is identified
-				else if (r.getQuestionNum()==QRCodeHandler.QUESTION_MEANS_STUDENT_NAME)
+				else if (r.isStudentIdentifier())
 					handler.addNewStudentIdentifier(r.getStudentID(), new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
 				// Otherwise barcode is from multiple choice
 				// if duplicated, generate warning message
@@ -70,7 +72,7 @@ public class Grader {
 						questionBoundaries[r.getStudentID()][r.getQuestionNum()].addPoints(r.getCoordinates());
 				}
 			} catch (ArrayIndexOutOfBoundsException ex){
-					System.out.println("Error handling response:" + r);
+					erroneousResponses.add(r);
 			}
 		}
 		// Once they have all been filled, it's time to check every question to see that it has the right number of responses

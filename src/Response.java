@@ -10,6 +10,9 @@ import com.google.zxing.ResultPoint;
  */
 public class Response 
 {
+	public final int OPEN_RESPONSE = -1;
+	public final int STUDENT_IDENTIFIER = -2;
+	
 	private int versionNum;
 	private int examID;
 	private int studentID;
@@ -105,6 +108,18 @@ public class Response
 				+ ", studentID=" + studentID + ", questionNum=" + questionNum
 				+ ", answerNum=" + answerNum + ", pageNum=" + pageNum
 				+ ", coordinates=" + Arrays.toString(coordinates) + "]";
+	}
+	
+	public boolean isOpenResponse(){
+		if (answerNum==-1)
+			return true;
+		return false;
+	}
+	
+	public boolean isStudentIdentifier(){
+		if (questionNum<0||answerNum==-1)
+			return true;
+		return false;
 	}
 
 }
