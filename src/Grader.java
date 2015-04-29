@@ -61,7 +61,7 @@ public class Grader {
 				// Otherwise barcode is from multiple choice
 				// if duplicated, generate warning message
 				else if(qrCodesFound[r.getStudentID()][r.getQuestionNum()][r.getAnswerNum()] == true){
-						handler.addNewMultipleChoiceItem(r.getStudentID(), r.getQuestionNum(), questions[r.getQuestionNum()], ManualGradeHandler.DUPLICATE_QR_CODE_FOUND, new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
+						handler.addNewMultipleChoiceItem(r.getStudentID(), r.getQuestionNum(), (MultipleChoiceQuestion)questions[r.getQuestionNum()], ManualGradeHandler.DUPLICATE_QR_CODE_FOUND, new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
 				}else{
 					// Mark the QR code as found in the 3d array
 					qrCodesFound[r.getStudentID()][r.getQuestionNum()][r.getAnswerNum()] = true;	
@@ -97,7 +97,7 @@ public class Grader {
 				else if (responsesForThisQuestion+1!=qrCodesFound[s][q].length){
 					// 2 or more barcodes undetected = indicates uncertain answer
 					chosenAnswers[s][q] = UNKNOWN_ANSWER;
-					handler.addNewMultipleChoiceItem(s, q, questions[q], ManualGradeHandler.MULTIPLE_CHOICE_ANSWER_INDETERMINATE, questionBoundaries[s][q]);						
+					handler.addNewMultipleChoiceItem(s, q, questions[q], ManualGradeHandler.INDETERMINATE_RESPONSE, questionBoundaries[s][q]);						
 				} else {
 					// otherwise, the answer is definitively known and can be recorded
 					chosenAnswers[s][q] = chosenResponse;

@@ -34,10 +34,10 @@ public class ManualGrader extends JFrame{
 		contentPane = new JPanel();
 		
 		//get boundary points from RectangleBoundary Object
-		int topLeftX = rb.getTopLeftX();
-		int topLeftY = rb.getTopLeftY();
-		int bottomRightX = rb.getBottomRightX();
-		int bottomRightY = rb.getBottomRightY();
+		int topLeftX = (int)rb.getTopLeftX();
+		int topLeftY = (int)rb.getTopLeftY();
+		int bottomRightX = (int)rb.getBottomRightX(); 
+		int bottomRightY = (int)rb.getBottomRightY();
 		
 		//draw red rectangle
 		rectDraw rd = new rectDraw(topLeftX, topLeftY, (bottomRightX-topLeftX), (bottomRightY-topLeftY) );

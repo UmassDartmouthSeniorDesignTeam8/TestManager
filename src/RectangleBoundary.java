@@ -58,4 +58,9 @@ public class RectangleBoundary {
 	public void setPageNum(int pageNumber){
 		this.pageNumber = pageNumber;
 	}
+	
+	public void addHeight(float height){
+		bottomRightX+=height;
+		bottomRightY+=height;
+	}
 }
