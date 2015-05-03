@@ -1,4 +1,5 @@
 package htmlGrader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import examData.Exam;
@@ -12,6 +13,7 @@ public class ResultSet {
 	char chosenResponses[][];	// holds MC response for [student][question], 0 for unknown
 	int pointsAwarded[][];		// holds points given for each [student][question]
 	int pointsPossible[];		// num points possible per question
+	int totalPoints = 0;  		// total number of points a test can have
 	public final int numStudents;
 	public final int numQuestions;
 	
@@ -29,6 +31,7 @@ public class ResultSet {
 		pointsAwarded = new int[numStudents][numQuestions];
 		for (int i=0; i<questions.length; i++){
 			pointsPossible[i] =  questions[i].getPointValue();
+			totalPoints += pointsPossible[i];
 		}
 	}
 	
@@ -91,4 +94,101 @@ public class ResultSet {
 		}
 		return "Invalid Student #" + student;
 	}
+	
+	public void writePointsCSV(String fileName) {
+
+		PrintWriter output = null;
+
+		try {
+			output = new PrintWriter(fileName);
+			// Write the CSV file header
+			output.print("name");
+			for(int i = 0; i < numQuestions; i++){
+				output.print(",Question["+ i + "] pts[" + pointsPossible[i] + "]");
+			}
+			output.println(", Total Points["+ totalPoints +"]");
+			/*
+			 * In theory this will add a student and then for that student it
+			 * will go through their test and mark down the number of points
+			 * awarded for each question; keeping a running total for the
+			 * students grade then in the 1st loop it appends that and then adds
+			 * an end line marker
+			 */
+			for (int stu = 0; stu < numStudents; stu++) {
+				int total = 0;
+				output.print(getStudentName(stu));
+				for (int quest = 0; quest < numQuestions; quest++) {
+					output.print("," + (char) pointsAwarded[stu][quest]);
+					total += pointsAwarded[stu][quest];
+				}
+				// will put in the students total
+				output.println(","+(char) total);
+			}
+
+		} catch (Exception e) {
+			System.out.println("Error in CsvPrintWriter !!!");
+			e.printStackTrace();
+		} finally {
+			try {
+				output.flush();
+				output.close();
+			} catch (Exception e) {
+				System.out
+						.println("Error while flushing/closing PrintWriter !!!");
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	public void writeAnswerCSV(String fileName) {
+
+		PrintWriter output = null;
+
+		try {
+			output = new PrintWriter(fileName);
+			
+			// Write the CSV file header
+			output.println("name");
+			for (int i = 0; i < numQuestions; i++) {			
+				if (!questions[i].isManuallyGraded()){
+					output.print(",Question["+ i + "] ans[" + ((MultipleChoiceQuestion) questions[i]).getCorrectChoice() + "]");
+				}
+			}
+			output.println();
+			
+			/*
+			 * In theory this will add a student and then for that student it
+			 * will go through their test and mark down what their answer was
+			 *  then adds an end line marker
+			 */
+			for (int stu = 0; stu < numStudents; stu++) {
+				output.print(getStudentName(stu));
+				for (int quest = 0; quest < numQuestions; quest++) {
+					if (!questions[quest].isManuallyGraded()){
+						output.print(","+chosenResponses[stu][quest]);	
+					}
+				}
+				// adding in the end line marker
+				output.println();
+			}
+
+		} catch (Exception e) {
+			System.out.println("Error in CsvPrintWriter !!!");
+			e.printStackTrace();
+		} finally {
+			try {
+				output.flush();
+				output.close();
+			} catch (Exception e) {
+				System.out
+						.println("Error while flushing/closing PrintWriter !!!");
+				e.printStackTrace();
+			}
+
+		}
+	}
+	
+	
+	
 }

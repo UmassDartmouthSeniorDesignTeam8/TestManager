@@ -81,6 +81,10 @@ public class MultipleChoiceQuestion extends Question {
 		return false;
 	}
 
+	public char getCorrectChoice(){
+		return (char) ('A' + correctChoice);
+	}
+	
 	/*attempting to test the gui; this is just making it not look nice... <co>*/
 	public String toString() {
 		StringBuffer b = new StringBuffer();
