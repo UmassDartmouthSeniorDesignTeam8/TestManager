@@ -1,4 +1,5 @@
 package htmlGrader;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -19,8 +20,11 @@ public class Grader {
 	private ArrayList<Response> responses;
 	private ArrayList<Response> erroneousResponses;
 	private ManualGradeHandler handler;
+	private RectangleBoundary[][] questionBoundaries;
 	private int chosenAnswers[][];
 	private int points[][];
+	
+	private ResultSet results;
 	
 	/**
 	 * The grader class associates a list of responses with the exam itself.
@@ -30,20 +34,21 @@ public class Grader {
 	 * @param r
 	 * @param h
 	 */
-	public Grader(Exam e, ArrayList<Response> r, ManualGradeHandler h){
+	public Grader(Exam e, ArrayList<Response> r, ResultSet rs, BufferedImage[] pages){
 		this.exam = e;
 		this.responses = r;
-		this.handler = h;
+		this.results = rs;
 		chosenAnswers = new int[exam.getNumPrinted()][exam.getNumQuestions()];
 		points = new int[exam.getNumPrinted()][exam.getNumQuestions()];
 		erroneousResponses = new ArrayList<Response>();
+		handler = new ManualGradeHandler(pages, rs);
 	}
 	
 	public void generateGrades(){
 		// first declare a jagged array to hold the possible responses for all questions [student][question][response]
 		boolean[][][] qrCodesFound = new boolean[exam.getNumPrinted()][exam.getNumQuestions()][];
 		Question questions[] = exam.getQuestionArray();
-		RectangleBoundary[][] questionBoundaries = new RectangleBoundary[exam.getNumPrinted()][exam.getNumQuestions()];
+		questionBoundaries = new RectangleBoundary[exam.getNumPrinted()][exam.getNumQuestions()];
 		
 		// now declare the appropriate size for each question in the array; by default all booleans will be false
 		for (int q=0; q<exam.getNumQuestions(); q++){
@@ -57,24 +62,24 @@ public class Grader {
 		//now we go through all the questions and fill them into the array where necessary
 		for (Response r: responses){
 			try{
+				// First add the rectangle boundary for the response or update the existing one
+				if (questionBoundaries[r.getStudentID()][r.getQuestionNum()] == null)
+					questionBoundaries[r.getStudentID()][r.getQuestionNum()] = new RectangleBoundary(r.getCoordinates(), r.getPageNum());
+				else
+					questionBoundaries[r.getStudentID()][r.getQuestionNum()].addPoints(r.getCoordinates());
 				// Create item for open response question
 				if (r.isOpenResponse())
-					handler.addNewOpenResponseItem(r.getStudentID(), r.getQuestionNum(), questions[r.getQuestionNum()], new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
+					handler.addNewOpenResponseItem(r.getStudentID(), r.getQuestionNum(), questions[r.getQuestionNum()], questionBoundaries[r.getStudentID()][r.getQuestionNum()]);
 				// Create item when student's name barcode is identified
 				else if (r.isStudentIdentifier())
-					handler.addNewStudentIdentifier(r.getStudentID(), new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
+					handler.addNewStudentIdentifier(r.getStudentID(), questionBoundaries[r.getStudentID()][r.getQuestionNum()]);
 				// Otherwise barcode is from multiple choice
 				// if duplicated, generate warning message
 				else if(qrCodesFound[r.getStudentID()][r.getQuestionNum()][r.getAnswerNum()] == true){
-						handler.addNewMultipleChoiceItem(r.getStudentID(), r.getQuestionNum(), (MultipleChoiceQuestion)questions[r.getQuestionNum()], ManualGradeHandler.DUPLICATE_QR_CODE_FOUND, new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
+						handler.addNewMultipleChoiceItem(r.getStudentID(), r.getQuestionNum(), (MultipleChoiceQuestion)questions[r.getQuestionNum()],questionBoundaries[r.getStudentID()][r.getQuestionNum()], ManualGradeHandler.DUPLICATE_QR_CODE);
 				}else{
 					// Mark the QR code as found in the 3d array
 					qrCodesFound[r.getStudentID()][r.getQuestionNum()][r.getAnswerNum()] = true;	
-					// Add the qr code's coordinates to the boundary for the question in case it's needed later; establish the object if it's null
-					if (questionBoundaries[r.getStudentID()][r.getQuestionNum()] == null)
-						questionBoundaries[r.getStudentID()][r.getQuestionNum()] = new RectangleBoundary(r.getCoordinates(), r.getPageNum());
-					else
-						questionBoundaries[r.getStudentID()][r.getQuestionNum()].addPoints(r.getCoordinates());
 				}
 			} catch (ArrayIndexOutOfBoundsException ex){
 					erroneousResponses.add(r);
@@ -102,7 +107,7 @@ public class Grader {
 				else if (responsesForThisQuestion+1!=qrCodesFound[s][q].length){
 					// 2 or more barcodes undetected = indicates uncertain answer
 					chosenAnswers[s][q] = UNKNOWN_ANSWER;
-					handler.addNewMultipleChoiceItem(s, q, questions[q], ManualGradeHandler.INDETERMINATE_RESPONSE, questionBoundaries[s][q]);						
+					handler.addNewMultipleChoiceItem(s, q, questions[q], questionBoundaries[s][q], ManualGradeHandler.INDETERMINATE_RESPONSE);						
 				} else {
 					// otherwise, the answer is definitively known and can be recorded
 					chosenAnswers[s][q] = chosenResponse;
@@ -111,6 +116,8 @@ public class Grader {
 					
 			}
 		}
+		
+		handler.notifyAllExceptionsReceived();
 	}
 	
 	public void printChosenAnswers(){

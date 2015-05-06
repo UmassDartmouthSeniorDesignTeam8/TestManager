@@ -33,4 +33,22 @@ public class ManuallyGradedMCItem extends ManuallyGradedItem {
 		return "Unknown multiple choice exception.";
 	}
 
+	@Override
+	public boolean requiresPoints() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean requiresResponse() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean requiresStudentID() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

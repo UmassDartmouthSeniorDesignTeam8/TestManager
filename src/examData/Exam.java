@@ -95,6 +95,10 @@ public class Exam implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	
+	public void setExamId(int id){
+		this.exam_id = id;
+	}
 
 	public void setCoverPageInstructions(String coverPageInstructions) {
 		this.coverPageInstructions = coverPageInstructions;

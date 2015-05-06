@@ -1,9 +1,10 @@
 package htmlGrader;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -22,8 +23,10 @@ import javax.swing.JPanel;
  *
  */
 public class ManualGrader extends JFrame{
+	public final static int NO_RESPONSE = -4000;
 
 	private JPanel contentPane;
+	private BufferedImage localImage;
 	
 	//manual grader window for showing exceptions
 	public ManualGrader(BufferedImage img, int num_answers, RectangleBoundary rb) {
@@ -41,8 +44,16 @@ public class ManualGrader extends JFrame{
 		int bottomRightX = (int)rb.getBottomRightX(); 
 		int bottomRightY = (int)rb.getBottomRightY();
 		
-		//draw red rectangle
-		rectDraw rd = new rectDraw(topLeftX, topLeftY, (bottomRightX-topLeftX), (bottomRightY-topLeftY) );
+		// Draw rectangle in image
+		Graphics2D g2d = img.createGraphics();
+		g2d.setColor(Color.RED);
+		g2d.setStroke(new BasicStroke((float) 3.0));
+		System.out.println(img.getColorModel());
+		System.out.println(img.getHeight() + " " + img.getWidth());
+		System.out.println(topLeftX + " " + topLeftY + " " + bottomRightX + " " + bottomRightY);
+		g2d.drawRect(topLeftX, topLeftY, bottomRightX-topLeftX, bottomRightY-topLeftY);
+		g2d.dispose();
+		
 		
 		//dropdown possibilities
 		String labels[] = { "A", "B", "C", "D", "E", "F", "G", "H","I", "J" };
@@ -79,6 +90,12 @@ public class ManualGrader extends JFrame{
 	    contentPane.add(btn);
 	    contentPane.add(image_frame);
 	    setContentPane(contentPane);  
+	    
+	    this.setVisible(true);
+		
+	}
+	
+	public void setErrorMessage(String message){
 		
 	}
 

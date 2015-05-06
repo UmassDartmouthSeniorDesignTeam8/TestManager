@@ -107,6 +107,7 @@ public class ExamGenerator {
 	
 	public static void main(String args[]){
 		Exam e = new ExamGenerator().getExam();
+		e.setExamId(1000);
 		e.setNumberPrinted(10);
 		System.out.println(e);
 		HTMLGenerator gen = new HTMLGenerator(e);

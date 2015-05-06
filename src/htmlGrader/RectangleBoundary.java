@@ -11,10 +11,10 @@ public class RectangleBoundary {
 	
 	public RectangleBoundary(int pageNum){
 		this.pageNumber = pageNum;
-		topLeftX = 0;
-		topLeftY = 0;
-		bottomRightX = Integer.MAX_VALUE;
-		bottomRightY = Integer.MAX_VALUE;
+		topLeftX = Integer.MAX_VALUE;
+		topLeftY = Integer.MAX_VALUE;
+		bottomRightX = 0;
+		bottomRightY = 0;
 	}
 	
 	public RectangleBoundary(ResultPoint[] points, int pageNum){

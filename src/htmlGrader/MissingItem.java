@@ -2,7 +2,7 @@ package htmlGrader;
 import examData.Question;
 
 
-public class MissingItem {
+public class MissingItem implements Comparable<MissingItem>{
 	private int questionNum, studentNum;
 	private Question question;
 	
@@ -22,5 +22,16 @@ public class MissingItem {
 	
 	public Question getQuestion(){
 		return question;
+	}
+
+	@Override
+	public int compareTo(MissingItem b) {
+		
+			if (questionNum<b.questionNum)
+				return -1;
+			else if (questionNum>b.questionNum)
+				return 1;
+			else
+				return 0;
 	}
 }

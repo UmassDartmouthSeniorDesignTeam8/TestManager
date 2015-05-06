@@ -9,7 +9,7 @@ public class ImageViewer
 {
 	JFrame frame;
 	
-	protected void displayImages(BufferedImage imgs)
+	public void displayImages(BufferedImage imgs)
 	{
 		{
 			frame = new JFrame();
@@ -18,6 +18,5 @@ public class ImageViewer
 			frame.pack();
 			frame.setVisible(true);
 		}
-
 	}
 }

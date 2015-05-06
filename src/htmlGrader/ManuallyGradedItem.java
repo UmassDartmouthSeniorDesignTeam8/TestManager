@@ -58,4 +58,10 @@ public abstract class ManuallyGradedItem implements Comparable<ManuallyGradedIte
 		else
 			return 0;
 	}
+	
+	public abstract boolean requiresPoints();
+	
+	public abstract boolean requiresResponse();
+	
+	public abstract boolean requiresStudentID();
 }

@@ -1,4 +1,5 @@
 package htmlGrader;
+import java.awt.image.BufferedImage;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -14,11 +15,15 @@ public class ManualGradeHandler {
 	private ManualGrader grader;
 	private ManuallyGradedItem currentlyGrading;
 	private Queue<ManuallyGradedExceptionItem> exceptions;
+	private boolean allExceptionsReceived;
+	private ResultSet results;
+	private BufferedImage[] images;
 	
-	public ManualGradeHandler(){
-		
+	public ManualGradeHandler(BufferedImage[] pages, ResultSet results){
+		this.results = results;
 		itemsToGrade = new PriorityQueue<ManuallyGradedItem>();
 		missingItems = new PriorityQueue<MissingItem>();
+		images = pages;
 	}
 	
 	/**
@@ -56,7 +61,7 @@ public class ManualGradeHandler {
 	public void addNewMultipleChoiceItem(int studentNum, int questionNum, Question q, RectangleBoundary boundary, int reason){
 		// If the question isn't Multiple Choice, then there is a problem, don't attempt to grade
 		if (!(q instanceof MultipleChoiceQuestion))
-			exceptions.add(new ManuallyGradedExceptionItem(studentNum, questionNum, ManuallyGradedExceptionItem.Reason.NOT_MULTIPLE_CHOICE));
+			exceptions.add(new ManuallyGradedExceptionItem(studentNum, questionNum, ManuallyGradedExceptionItem.NOT_MULTIPLE_CHOICE));
 		// If no QR codes were found, add to missing items
 		if (reason==NO_QR_CODES_FOUND){
 			addNewMissingItem(studentNum, questionNum, q);
@@ -73,20 +78,70 @@ public class ManualGradeHandler {
 	}
 	
 	// Display the next item in the manual grader GUI
-	public synchronized void displayNext(){
-		if (currentlyGrading==null){
-			currentlyGrading = itemsToGrade.poll();
-			if (currentlyGrading!=null){
-				// add next item to manual grader
-				grader = new ManualGrader(null /*replace with image*/,currentlyGrading.getQuestion().getNumChoices(), currentlyGrading.getRectangleBoundary());
-			}
+	private synchronized void displayNext(){
+		currentlyGrading = itemsToGrade.poll();
+		if (currentlyGrading!=null){
+			// add next item to manual grader
+			grader = new ManualGrader(images[currentlyGrading.getRectangleBoundary().getPageNum()],currentlyGrading.getQuestion().getNumChoices(), currentlyGrading.getRectangleBoundary());
+		} else if (allExceptionsReceived){
+			// TODO - show Result Set GUI
 		}
 	}
 	
-	/*
-	 * Accept a response from the GUI; this will provide only small validation
+	/**
+	 * This will receive feedback back from the manual grader GUI. It will ensure that the correct result is provided.
+	 * @param points				Number of points for open response; NO_RESPONSE otherwise
+	 * @param responseNumber		MC response item, -1 for unknown; NO_RESPONSE otherwise
+	 * @param studentName			Student name as string for student identifiers; null/empty otherwise
+	 * @return
 	 */
-	public synchronized void getResponseFromGUI(int points, int responseNumber, String studentName){
+	public synchronized boolean getResponseFromGUI(int points, int responseNumber, String studentName){
+		if (currentlyGrading.requiresStudentID() && (studentName==null || studentName.length() == 0)){
+			results.provideStudentName(currentlyGrading.getStudentNum(), studentName);
+			displayNext();
+			return true;
+		} else if (currentlyGrading.requiresStudentID()){
+			grader.setErrorMessage("Student name requires to satisfy student identifier. A name must be chosen");
+			return false;
+		} else if (currentlyGrading.requiresPoints() && points!=ManualGrader.NO_RESPONSE){
+			results.provideMCResult(currentlyGrading.getStudentNum(), currentlyGrading.getQuestionNum(), points);
+			displayNext();
+			return true;
+		} else if (currentlyGrading.requiresPoints()){
+			grader.setErrorMessage("Point value must be assigned for this question.");
+		} else if (currentlyGrading.requiresResponse() && responseNumber == ManualGrader.NO_RESPONSE)
+			grader.setErrorMessage("Mulitple choice response must be selected.");
+		else if (currentlyGrading.requiresResponse()){
+			results.provideMCResult(currentlyGrading.getStudentNum(), currentlyGrading.getQuestionNum(), responseNumber);
+			displayNext();
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * This method is used by the Grader to notify the manual grade handler
+	 * that there will be no more exception items generated so that it will
+	 * know when to terminate the manual grading process.
+	 */
+	public void notifyAllExceptionsReceived(){
+		allExceptionsReceived = true;
+		for (int i=0; i<10; i++)
+			displayNext();
+	}
+	
+	/**
+	 * This allows the user to skip all remaining exceptions, rewarding
+	 * no points for any remaining items.
+	 */
+	public void skipRemainingExceptions(){
 		
+	}
+	
+	/**
+	 * This permanently skips the current exception, rewarding no points.
+	 */
+	public void skipCurrentException(){
+		displayNext();
 	}
 }

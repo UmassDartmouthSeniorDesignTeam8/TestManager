@@ -28,10 +28,15 @@ public class ResultSet {
 		this.questions = exam.getQuestionArray();
 		chosenResponses = new char[numStudents][numQuestions];
 		students = new String[numStudents];
+		pointsPossible = new int[exam.getNumQuestions()];
 		pointsAwarded = new int[numStudents][numQuestions];
 		for (int i=0; i<questions.length; i++){
-			pointsPossible[i] =  questions[i].getPointValue();
-			totalPoints += pointsPossible[i];
+			if (questions[i]==null)
+				System.out.println("Question " + i + " is empty.");
+			else{
+				pointsPossible[i] =  questions[i].getPointValue();
+				totalPoints += pointsPossible[i];
+			}
 		}
 	}
 	

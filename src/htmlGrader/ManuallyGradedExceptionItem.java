@@ -8,9 +8,9 @@ package htmlGrader;
  */
 public class ManuallyGradedExceptionItem {
 	
-	public enum Reason {NOT_MULTIPLE_CHOICE, NOT_OPEN_RESPONSE} 
+	public static final int NOT_MULTIPLE_CHOICE = -1, NOT_OPEN_RESPONSE = -2; 
 	private int student, question;
-	private Reason reason;
+	private int reason;
 	
 	/**
 	 * 
@@ -18,13 +18,13 @@ public class ManuallyGradedExceptionItem {
 	 * @param question		Question number
 	 * @param reason		Reason this value was generated (enumerated class)
 	 */
-	public ManuallyGradedExceptionItem(int student, int question, Reason reason) {
+	public ManuallyGradedExceptionItem(int student, int question, int reason) {
 		this.question = question;
 		this.reason = reason;
 		this.student = student;
 	}
 
-	public Reason getReason() {
+	public int getReason() {
 		return reason;
 	}
 

@@ -63,7 +63,7 @@ public class GhostRenderer {
 		}
 		ArrayList<BufferedImage> buffered = new ArrayList<BufferedImage>();
 		for (Image i: images){
-			BufferedImage toadd = new BufferedImage(i.getWidth(null),i.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
+			BufferedImage toadd = new BufferedImage(i.getWidth(null),i.getHeight(null), BufferedImage.TYPE_INT_RGB);
 			Graphics g = toadd.createGraphics();
 			g.drawImage(i,0,0,null);
 			g.dispose();
@@ -95,7 +95,7 @@ public class GhostRenderer {
 		
 		for (BufferedImage i: buffered){
 			ImageViewer view = new ImageViewer();
-			view.displayImage(i);
+			view.displayImages(i);
 		}
 		
 		ArrayList<Response> responses = QRStringInterpreter.interpret(buffered);

@@ -17,4 +17,19 @@ public class ManuallyGradedStudentID extends ManuallyGradedItem {
 		return "Please identify the student for this exam.";
 	}
 
+	@Override
+	public boolean requiresPoints() {
+		return false;
+	}
+
+	@Override
+	public boolean requiresResponse() {
+		return false;
+	}
+
+	@Override
+	public boolean requiresStudentID() {
+		return true;
+	}
+
 }
