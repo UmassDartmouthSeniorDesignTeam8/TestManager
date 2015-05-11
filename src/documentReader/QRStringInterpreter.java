@@ -108,28 +108,32 @@ public class QRStringInterpreter
 				 * with each piece of information, a new Response is created for each qrCode
 				 */
 				for(int i = 0; i < qrStrings.length; i++)
-				{								
-					String[] sep = qrStrings[i].split("v");
-					// splits into two parts: [0] before the v (empty) and [1] which is the rest of the string
-					
-					String[] sep2 = sep[1].split("e");
-					versionNum = Integer.parseInt(sep2[0]); // the actual versionNum just numbers
-					
-					String[] sep3 = sep2[1].split("s");
-					examID = Integer.parseInt(sep3[0]); // the actual examID just numbers
-					
-					String[] sep4 = sep3[1].split("q");
-					studentID = Integer.parseInt(sep4[0]); // the actual studentID just numbers
-					
-					String[] sep5 = sep4[1].split("a");
-					questionNum = Integer.parseInt(sep5[0]); // the actual questionNum just numbers
-					
-					answerNum = Integer.parseInt(sep5[1]); // the actual answerNum just numbers
-					
-					// create each Response in the arrayList
-					responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k, points.get(x)));
-					x++; // increase to the next set of coordinates for the next qrcode read on the exam
-					
+				{
+					try{
+						String[] sep = qrStrings[i].split("v");
+						// splits into two parts: [0] before the v (empty) and [1] which is the rest of the string
+						
+						String[] sep2 = sep[1].split("e");
+						versionNum = Integer.parseInt(sep2[0]); // the actual versionNum just numbers
+						
+						String[] sep3 = sep2[1].split("s");
+						examID = Integer.parseInt(sep3[0]); // the actual examID just numbers
+						
+						String[] sep4 = sep3[1].split("q");
+						studentID = Integer.parseInt(sep4[0]); // the actual studentID just numbers
+						
+						String[] sep5 = sep4[1].split("a");
+						questionNum = Integer.parseInt(sep5[0]); // the actual questionNum just numbers
+						
+						answerNum = Integer.parseInt(sep5[1]); // the actual answerNum just numbers
+						
+						// create each Response in the arrayList
+						responses.add(new Response(versionNum, examID, studentID, questionNum, answerNum, k, points.get(x)));
+						x++; // increase to the next set of coordinates for the next qrcode read on the exam
+					} catch (NumberFormatException ex){
+						System.out.println("Error parsing string " + qrStrings[i]);
+					}
+						
 					}
 			} catch (NotFoundException e){
 				System.out.println("No barcodes found on page " + k);
@@ -139,34 +143,34 @@ public class QRStringInterpreter
 		}
 	
 	/*  the main method here is for testing purposes only */
-	public static void main(String[] args) throws Exception
-	{
-		File x = new File("C:\\Orion\\newsampleexam.pdf");	// get the file
-		QRStringInterpreter.interpret(x); // call the interpreter - removed creation of object since this is static <SB>
-		
-		for(int j = 0; j < responses.size(); j++)
-		{
-			/* 
-			 * Print checks to ensure everything was getting created correctly
-			 * displays everything but the coordinates
-			 */
-				System.out.println("Response " + j + "'s version number: " + responses.get(j).getVersionNum());
-				System.out.println("Response " + j + "'s exam id: " + responses.get(j).getExamID());
-				System.out.println("Response " + j + "'s student Id: " + responses.get(j).getStudentID());
-				System.out.println("Response " + j + "'s question num: " + responses.get(j).getQuestionNum());
-				System.out.println("Response " + j + "'s answer num: " + responses.get(j).getAnswerNum());
-				System.out.println("Response " + j + "'s page number: " + responses.get(j).getPageNum());
-				System.out.println("Response " + j + "'s coordinates:");
-				
-				// each qrCode has three coordinates, these are held in an array
-				ResultPoint[] coordinates = responses.get(j).getCoordinates();
-				for(int k = 0; k < coordinates.length; k++)
-				{
-					System.out.println(coordinates[k]); 
-				}
-				System.out.println();
-		}
-	}		
+//	public static void main(String[] args) throws Exception
+//	{
+//		File x = new File("C:\\Orion\\newsampleexam.pdf");	// get the file
+//		QRStringInterpreter.interpret(x); // call the interpreter - removed creation of object since this is static <SB>
+//		
+//		for(int j = 0; j < responses.size(); j++)
+//		{
+//			/* 
+//			 * Print checks to ensure everything was getting created correctly
+//			 * displays everything but the coordinates
+//			 */
+//				System.out.println("Response " + j + "'s version number: " + responses.get(j).getVersionNum());
+//				System.out.println("Response " + j + "'s exam id: " + responses.get(j).getExamID());
+//				System.out.println("Response " + j + "'s student Id: " + responses.get(j).getStudentID());
+//				System.out.println("Response " + j + "'s question num: " + responses.get(j).getQuestionNum());
+//				System.out.println("Response " + j + "'s answer num: " + responses.get(j).getAnswerNum());
+//				System.out.println("Response " + j + "'s page number: " + responses.get(j).getPageNum());
+//				System.out.println("Response " + j + "'s coordinates:");
+//				
+//				// each qrCode has three coordinates, these are held in an array
+//				ResultPoint[] coordinates = responses.get(j).getCoordinates();
+//				for(int k = 0; k < coordinates.length; k++)
+//				{
+//					System.out.println(coordinates[k]); 
+//				}
+//				System.out.println();
+//		}
+//	}		
 }	
 	
 

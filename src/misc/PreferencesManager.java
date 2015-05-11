@@ -95,7 +95,7 @@ public class PreferencesManager implements Serializable{
 		}
 	}
 	
-	public static String getFilePath() {
+	public static String getFileDirectory() {
 		getInstance();
 		return singleton.filePath;
 	}

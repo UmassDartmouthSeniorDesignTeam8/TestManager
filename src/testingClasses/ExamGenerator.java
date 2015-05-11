@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+import misc.FileManager;
 import misc.PreferencesManager;
 import examData.Course;
 import examData.Exam;
@@ -60,7 +61,7 @@ public class ExamGenerator {
 				add("Undefined");
 		}};
 		
-		MultipleChoiceQuestion question3 = new MultipleChoiceQuestion("What is the value of x after the following statement?<br>int x = 12/5;",10, responses3, 2);
+		MultipleChoiceQuestion question3 = new MultipleChoiceQuestion("What is the value of x after the following statement?<br>int x = 12/5;",10, responses3, 1);
 		/*constructor has to match... I don't know why it isn't liking the test name. <co>*/
 		//Exam e = new Exam("Practice Test1", 1);
 		// This constructor is declared; otherwise the date is never specified. <SB>
@@ -111,7 +112,7 @@ public class ExamGenerator {
 		Exam e = new ExamGenerator().getExam();
 		e.setExamId(1001);
 		e.setNumberPrinted(10);
-		System.out.println(e);
+		FileManager.saveExamToFile(e);
 		HTMLGenerator gen = new HTMLGenerator(e);
 		gen.generateSingleHTML("C:\\Orion\\cmdSample", true, 10);
 		FileOutputStream fout = null;

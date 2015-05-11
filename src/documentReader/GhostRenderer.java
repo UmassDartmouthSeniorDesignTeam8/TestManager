@@ -25,7 +25,7 @@ import testingClasses.ImageViewer;
 
 public class GhostRenderer {
 	
-	public static ArrayList<BufferedImage> getImages(String filepath){
+	public static ArrayList<BufferedImage> getImages(String filepath, int resolution){
 		File source = new File(filepath);
 			
 		PDFDocument document = new PDFDocument();
@@ -41,7 +41,7 @@ public class GhostRenderer {
 		
 		SimpleRenderer renderer = new SimpleRenderer();
 		
-		renderer.setResolution(125);
+		renderer.setResolution(resolution);
 		
 		List<Image> images;
 		try {

@@ -1,5 +1,8 @@
 package htmlGrader;
 
+import examData.OpenResponseQuestion;
+import examData.Question;
+
 
 public class ManuallyGradedStudentID extends ManuallyGradedItem {
 	
@@ -30,6 +33,11 @@ public class ManuallyGradedStudentID extends ManuallyGradedItem {
 	@Override
 	public boolean requiresStudentID() {
 		return true;
+	}
+	
+	@Override
+	public Question getQuestion(){
+		return new OpenResponseQuestion("Please identify the student.", 0);
 	}
 
 }

@@ -62,8 +62,11 @@ public class Grader {
 		//now we go through all the questions and fill them into the array where necessary
 		for (Response r: responses){
 			try{
+				// First check for a student identifier, which will otherwise try to use a negative array index
+				if (r.isStudentIdentifier())
+					handler.addNewStudentIdentifier(r.getStudentID(), new RectangleBoundary(r.getCoordinates(), r.getPageNum()));
 				// First add the rectangle boundary for the response or update the existing one
-				if (questionBoundaries[r.getStudentID()][r.getQuestionNum()] == null)
+				else if (questionBoundaries[r.getStudentID()][r.getQuestionNum()] == null)
 					questionBoundaries[r.getStudentID()][r.getQuestionNum()] = new RectangleBoundary(r.getCoordinates(), r.getPageNum());
 				else
 					questionBoundaries[r.getStudentID()][r.getQuestionNum()].addPoints(r.getCoordinates());
@@ -82,7 +85,7 @@ public class Grader {
 					qrCodesFound[r.getStudentID()][r.getQuestionNum()][r.getAnswerNum()] = true;	
 				}
 			} catch (ArrayIndexOutOfBoundsException ex){
-					erroneousResponses.add(r);
+				// This will be caused by student identifiers
 			}
 		}
 		// Once they have all been filled, it's time to check every question to see that it has the right number of responses
@@ -113,7 +116,6 @@ public class Grader {
 				} else {
 					// otherwise, the answer is definitively known and can be recorded
 					results.provideMCResult(s,q,chosenResponse);
-					results.providePoints(s, q, questions[q].getPointValue());
 				}
 					
 			}

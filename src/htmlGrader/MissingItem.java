@@ -34,4 +34,8 @@ public class MissingItem implements Comparable<MissingItem>{
 			else
 				return 0;
 	}
+	
+	public String toString(){
+		return "[" + studentNum + ", " + questionNum + "]";
+	}
 }

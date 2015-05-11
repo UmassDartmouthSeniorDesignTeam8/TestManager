@@ -1,6 +1,8 @@
 package htmlGrader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
 
 import examData.Exam;
 import examData.MultipleChoiceQuestion;
@@ -17,12 +19,14 @@ public class ResultSet {
 	private final int numStudents;
 	private final int numQuestions;
 	private boolean manualComplete, autoComplete;
+	private Queue<MissingItem> missing;
 	
 	private Exam exam;
 	Question questions[];					// holds the exam
 	
 	// Constructor initializes arrays
 	public ResultSet(Exam e){
+		missing = null;
 		numStudents = e.getNumPrinted();
 		numQuestions = e.getNumQuestions();
 		this.exam = e;
@@ -49,7 +53,10 @@ public class ResultSet {
 	 * @return				true if result recorded successfully	 */
 	public boolean provideMCResult(int student, int question, int result){
 		if (questions[question] instanceof MultipleChoiceQuestion&&student<students.length&&question<questions.length){
-			chosenResponses[student][question] = (char)('A' + result);
+			if (result<0)
+				chosenResponses[student][question] = '?';
+			else
+				chosenResponses[student][question] = (char)('A' + result);
 			pointsAwarded[student][question] = ((MultipleChoiceQuestion) questions[question]).gradeResponse(result);
 			return true;
 		}
@@ -89,6 +96,10 @@ public class ResultSet {
 	public boolean providePoints(int student, int question, int points){
 		pointsAwarded[student][question] = points;
 		return true;
+	}
+	
+	public void provideMissingItems(Queue<MissingItem> missing){
+		this.missing = missing;
 	}
 	
 	/**
@@ -138,13 +149,14 @@ public class ResultSet {
 			 */
 			for (int stu = 0; stu < numStudents; stu++) {
 				int total = 0;
+				output.print("Student " + stu + ",");
 				output.print(getStudentName(stu));
 				for (int quest = 0; quest < numQuestions; quest++) {
-					output.print("," + (char) pointsAwarded[stu][quest]);
+					output.print("," + pointsAwarded[stu][quest]);
 					total += pointsAwarded[stu][quest];
 				}
 				// will put in the students total
-				output.println(","+(char) total);
+				output.println(","+ total);
 			}
 
 		} catch (Exception e) {
@@ -185,7 +197,7 @@ public class ResultSet {
 			 *  then adds an end line marker
 			 */
 			for (int stu = 0; stu < numStudents; stu++) {
-				output.print(getStudentName(stu));
+				output.print("Student " + 0 + ", " + students[stu]);
 				for (int quest = 0; quest < numQuestions; quest++) {
 					if (!questions[quest].isManuallyGraded()){
 						output.print(","+chosenResponses[stu][quest]);	
@@ -211,6 +223,17 @@ public class ResultSet {
 		}
 	}
 	
-	
-	
+	public void printResults(){
+		for(int i=0; i<numStudents; i++){
+			System.out.println("Student " + i + ": " + students[i] + ": ");
+			for (int j=0; j<numQuestions; j++){
+				System.out.print(pointsAwarded[i][j] + " (" + chosenResponses[i][j] + ") - ");				
+			}
+			System.out.println();
+		}
+		System.out.println("\n\n Missing Items");
+		for (MissingItem m: missing){
+			System.out.println(m);
+		}
+	}
 }

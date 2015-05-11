@@ -88,8 +88,8 @@ public class ManualGradeHandler {
 						currentlyGrading.requiresResponse(), currentlyGrading.requiresPoints(), currentlyGrading.requiresStudentID(),
 							currentlyGrading.getQuestion().getNumChoices());
 		} else if (allExceptionsReceived){
-			grader.close();
 			results.notifyAllManualGradingComplete();
+			grader.close();
 		}
 	}
 	
@@ -103,12 +103,12 @@ public class ManualGradeHandler {
 	public synchronized boolean getResponseFromGUI(double points, int responseNumber, String studentName){
 		if (currentlyGrading!=null){
 			if (currentlyGrading.requiresStudentID() && (studentName==null || studentName.length() == 0)){
+				grader.setErrorMessage("Student name requires to satisfy student identifier. A name must be chosen");
+				return false;
+			} else if (currentlyGrading.requiresStudentID()){
 				results.provideStudentName(currentlyGrading.getStudentNum(), studentName);
 				displayNext();
 				return true;
-			} else if (currentlyGrading.requiresStudentID()){
-				grader.setErrorMessage("Student name requires to satisfy student identifier. A name must be chosen");
-				return false;
 			} else if (currentlyGrading.requiresPoints() && points!=ManualGraderGUI.POINTS_NO_RESPONSE){
 				results.provideMCResult(currentlyGrading.getStudentNum(), currentlyGrading.getQuestionNum(), responseNumber);
 				displayNext();
@@ -134,6 +134,7 @@ public class ManualGradeHandler {
 	 */
 	public void notifyAllExceptionsReceived(){
 		allExceptionsReceived = true;
+		results.provideMissingItems(missingItems);
 	}
 	
 	/**

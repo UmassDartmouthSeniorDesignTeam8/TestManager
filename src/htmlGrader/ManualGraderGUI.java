@@ -11,6 +11,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.WritableRaster;
 
 import javax.imageio.ImageIO;
 import javax.swing.ComboBoxModel;
@@ -77,11 +79,13 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 	    
 	    //grade button
 	    submit = new JButton("Submit");
+	    this.getRootPane().setDefaultButton(submit);
 	    submit.addActionListener(this);
 	    
 	    //create label for error messages on the bottom
 	    warningLabel = new JLabel();
 	    warningLabel.setForeground(Color.RED);
+	    warningLabel.setSize((int)dim.getWidth()-100, (int)warningLabel.getPreferredSize().getHeight());
 	    
 	    responseLetters = new JComboBox<String>();
 	    buildChoiceComboBox(0);
@@ -140,6 +144,7 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 				choice = MULTIPLE_CHOICE_NO_RESPONSE;
 			else
 				choice = responseLetters.getSelectedIndex() + -1;
+			//System.out.println(numPoints + " " + choice + " " + studName);
 			handler.getResponseFromGUI(numPoints, choice, studName);
 		}		
 	}
@@ -176,34 +181,44 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 	}
 	
 	private void drawImage(BufferedImage image, RectangleBoundary rb){
+		// first clone the image so that the original isn't drawn on
+		ColorModel cm = image.getColorModel();
+		boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
+		WritableRaster raster = image.copyData(image.getRaster().createCompatibleWritableRaster());
+		localImage =  new BufferedImage(cm, raster, isAlphaPremultiplied, null);
+		
+		/*localImage = new BufferedImage(image.getWidth(),image.getHeight(),image.getType());
+		Graphics2D g = localImage.createGraphics();
+		g.drawImage(image, 0, 0, null);*/
+		
 		//get boundary points from RectangleBoundary Object
-			int topLeftX = (int)rb.getTopLeftX();
-			int topLeftY = (int)rb.getTopLeftY();
-			int bottomRightX = (int)rb.getBottomRightX(); 
-			int bottomRightY = (int)rb.getBottomRightY();
-			
-			// Draw rectangle in image
-			localImage = image;
-			Graphics2D g2d = localImage.createGraphics();
-			g2d.setColor(Color.RED);
-			g2d.setStroke(new BasicStroke((float) 3.0));
-			g2d.drawRect(topLeftX, topLeftY, bottomRightX-topLeftX, bottomRightY-topLeftY);
-			g2d.dispose();
-			
-			JScrollPane image_frame = new JScrollPane(new JLabel(new ImageIcon(image)));
-		    image_frame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		    image_frame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		    image_frame.setPreferredSize(new Dimension(dim.width-50, dim.height-100));
-		    if (center==null){
-		    	center = new JPanel(new FlowLayout());
-		    	center.add(image_frame);
-		    	this.add(center, BorderLayout.CENTER);
-		    } else{
-		    	center.removeAll();
-		    	center.add(image_frame);
-		    	center.revalidate();
-		    	center.repaint();
-		    }
+		int topLeftX = (int)rb.getTopLeftX();
+		int topLeftY = (int)rb.getTopLeftY();
+		int bottomRightX = (int)rb.getBottomRightX(); 
+		int bottomRightY = (int)rb.getBottomRightY();
+		
+		// Draw rectangle in image
+		//localImage = image;
+		Graphics2D g = localImage.createGraphics();
+		g.setColor(Color.RED);
+		g.setStroke(new BasicStroke((float) 3.0));
+		g.drawRect(topLeftX, topLeftY, bottomRightX-topLeftX, bottomRightY-topLeftY);
+		g.dispose();
+		
+		JScrollPane image_frame = new JScrollPane(new JLabel(new ImageIcon(localImage)));
+	    image_frame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+	    image_frame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+	    image_frame.setPreferredSize(new Dimension(dim.width-50, dim.height-150));
+	    if (center==null){
+	    	center = new JPanel(new FlowLayout());
+	    	center.add(image_frame);
+	    	this.add(center, BorderLayout.CENTER);
+	    } else{
+	    	center.removeAll();
+	    	center.add(image_frame);
+	    	center.revalidate();
+	    	center.repaint();
+	    }
 	}
 	
 	private void buildChoiceComboBox(int numChoices){
