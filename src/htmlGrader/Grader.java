@@ -41,10 +41,10 @@ public class Grader {
 		chosenAnswers = new int[exam.getNumPrinted()][exam.getNumQuestions()];
 		points = new int[exam.getNumPrinted()][exam.getNumQuestions()];
 		erroneousResponses = new ArrayList<Response>();
-		handler = new ManualGradeHandler(pages, rs);
+		handler = new ManualGradeHandler(pages, rs, exam.getCourse().getStudentNames());
 	}
 	
-	public void generateGrades(){
+	public ResultSet generateGrades(){
 		// first declare a jagged array to hold the possible responses for all questions [student][question][response]
 		boolean[][][] qrCodesFound = new boolean[exam.getNumPrinted()][exam.getNumQuestions()][];
 		Question questions[] = exam.getQuestionArray();
@@ -100,24 +100,28 @@ public class Grader {
 				if (responsesForThisQuestion == 0){
 					// No QR codes found (ie page not scanned)
 					handler.addNewMissingItem(s, q, questions[q]);
-					chosenAnswers[s][q] = UNKNOWN_ANSWER;
+					results.provideMCResult(s, q, UNKNOWN_ANSWER);
+					//chosenAnswers[s][q] = UNKNOWN_ANSWER;
 				} else if (responsesForThisQuestion == qrCodesFound[s][q].length)
-					chosenAnswers[s][q] = NO_RESPONSE;
+					results.provideMCResult(s,q,UNKNOWN_ANSWER);
+					//chosenAnswers[s][q] = NO_RESPONSE;
 					// In this case, no answer was selected
 				else if (responsesForThisQuestion+1!=qrCodesFound[s][q].length){
 					// 2 or more barcodes undetected = indicates uncertain answer
-					chosenAnswers[s][q] = UNKNOWN_ANSWER;
+					results.provideMCResult(s,q,UNKNOWN_ANSWER);
 					handler.addNewMultipleChoiceItem(s, q, questions[q], questionBoundaries[s][q], ManualGradeHandler.INDETERMINATE_RESPONSE);						
 				} else {
 					// otherwise, the answer is definitively known and can be recorded
-					chosenAnswers[s][q] = chosenResponse;
-					points[s][q] = questions[q].getPointValue();
+					results.provideMCResult(s,q,chosenResponse);
+					results.providePoints(s, q, questions[q].getPointValue());
 				}
 					
 			}
 		}
 		
 		handler.notifyAllExceptionsReceived();
+		results.notifyAllAutomaticGradingComplete();
+		return results;
 	}
 	
 	public void printChosenAnswers(){
@@ -125,5 +129,9 @@ public class Grader {
 		for (int[] i:chosenAnswers){
 			System.out.println("Student "+ count++ + " responses: " + Arrays.toString(i));
 		}
+	}
+	
+	public ResultSet getResults(){
+		return results;
 	}
 }

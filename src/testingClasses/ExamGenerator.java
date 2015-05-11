@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 
+import misc.PreferencesManager;
 import examData.Course;
 import examData.Exam;
 import examData.MultipleChoiceQuestion;
@@ -106,8 +107,9 @@ public class ExamGenerator {
 	}
 	
 	public static void main(String args[]){
+		PreferencesManager.getInstance().setQrCodeSize(58);
 		Exam e = new ExamGenerator().getExam();
-		e.setExamId(1000);
+		e.setExamId(1001);
 		e.setNumberPrinted(10);
 		System.out.println(e);
 		HTMLGenerator gen = new HTMLGenerator(e);

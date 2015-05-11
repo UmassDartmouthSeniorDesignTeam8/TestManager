@@ -74,4 +74,13 @@ public class Course implements Serializable{
 		}
 		return false;
 	}
+	
+	public String[] getStudentNames(){
+		String[] names = new String[students.size()];
+		int i=0;
+		for (Student s: students){
+			names[i++] = s.getName();
+		}
+		return names;
+	}
 }

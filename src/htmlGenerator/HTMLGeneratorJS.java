@@ -1,3 +1,9 @@
+/**
+ * This class was created to test javascript-based QR code generation but was not used
+ * in the final product, not was it ever finished to allow for full exam generation.
+ * It still requires student identifiers & open response question handling.
+ */
+
 package htmlGenerator;
 import misc.QRCodeHandler;
 import examData.Exam;

@@ -14,15 +14,16 @@ public class ResultSet {
 	int pointsAwarded[][];		// holds points given for each [student][question]
 	int pointsPossible[];		// num points possible per question
 	int totalPoints = 0;  		// total number of points a test can have
-	public final int numStudents;
-	public final int numQuestions;
+	private final int numStudents;
+	private final int numQuestions;
+	private boolean manualComplete, autoComplete;
 	
-	Exam exam;
+	private Exam exam;
 	Question questions[];					// holds the exam
 	
 	// Constructor initializes arrays
 	public ResultSet(Exam e){
-		numStudents = e.getCourse().getNumStudents();
+		numStudents = e.getNumPrinted();
 		numQuestions = e.getNumQuestions();
 		this.exam = e;
 		this.questions = exam.getQuestionArray();
@@ -85,6 +86,11 @@ public class ResultSet {
 		return false;
 	}
 	
+	public boolean providePoints(int student, int question, int points){
+		pointsAwarded[student][question] = points;
+		return true;
+	}
+	
 	/**
 	 * Provides a student's name.
 	 * @param student		student number
@@ -100,8 +106,19 @@ public class ResultSet {
 		return "Invalid Student #" + student;
 	}
 	
+	public void notifyAllAutomaticGradingComplete(){
+		autoComplete = true;
+	}
+	
+	public void notifyAllManualGradingComplete(){
+		manualComplete = true;
+	}
+	
+	public boolean isReady(){
+		return (manualComplete && autoComplete);
+	}
+	
 	public void writePointsCSV(String fileName) {
-
 		PrintWriter output = null;
 
 		try {

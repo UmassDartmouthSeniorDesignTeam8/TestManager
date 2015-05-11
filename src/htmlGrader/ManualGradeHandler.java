@@ -12,14 +12,15 @@ public class ManualGradeHandler {
 	public final static int NO_QR_CODES_FOUND = 3;
 	private Queue<ManuallyGradedItem> itemsToGrade;
 	private Queue<MissingItem> missingItems;
-	private ManualGrader grader;
+	private ManualGraderGUI grader;
 	private ManuallyGradedItem currentlyGrading;
 	private Queue<ManuallyGradedExceptionItem> exceptions;
 	private boolean allExceptionsReceived;
 	private ResultSet results;
 	private BufferedImage[] images;
 	
-	public ManualGradeHandler(BufferedImage[] pages, ResultSet results){
+	public ManualGradeHandler(BufferedImage[] pages, ResultSet results, String[] studentNames){
+		grader = new ManualGraderGUI(this, studentNames);
 		this.results = results;
 		itemsToGrade = new PriorityQueue<ManuallyGradedItem>();
 		missingItems = new PriorityQueue<MissingItem>();
@@ -81,10 +82,14 @@ public class ManualGradeHandler {
 	private synchronized void displayNext(){
 		currentlyGrading = itemsToGrade.poll();
 		if (currentlyGrading!=null){
+			System.out.println("Displaying next..." + currentlyGrading.getQuestion().getNumChoices());
 			// add next item to manual grader
-			grader = new ManualGrader(images[currentlyGrading.getRectangleBoundary().getPageNum()],currentlyGrading.getQuestion().getNumChoices(), currentlyGrading.getRectangleBoundary());
+			grader.displayItem(images[currentlyGrading.getRectangleBoundary().getPageNum()],currentlyGrading.getRectangleBoundary(),
+						currentlyGrading.requiresResponse(), currentlyGrading.requiresPoints(), currentlyGrading.requiresStudentID(),
+							currentlyGrading.getQuestion().getNumChoices());
 		} else if (allExceptionsReceived){
-			// TODO - show Result Set GUI
+			grader.close();
+			results.notifyAllManualGradingComplete();
 		}
 	}
 	
@@ -95,26 +100,29 @@ public class ManualGradeHandler {
 	 * @param studentName			Student name as string for student identifiers; null/empty otherwise
 	 * @return
 	 */
-	public synchronized boolean getResponseFromGUI(int points, int responseNumber, String studentName){
-		if (currentlyGrading.requiresStudentID() && (studentName==null || studentName.length() == 0)){
-			results.provideStudentName(currentlyGrading.getStudentNum(), studentName);
-			displayNext();
-			return true;
-		} else if (currentlyGrading.requiresStudentID()){
-			grader.setErrorMessage("Student name requires to satisfy student identifier. A name must be chosen");
+	public synchronized boolean getResponseFromGUI(double points, int responseNumber, String studentName){
+		if (currentlyGrading!=null){
+			if (currentlyGrading.requiresStudentID() && (studentName==null || studentName.length() == 0)){
+				results.provideStudentName(currentlyGrading.getStudentNum(), studentName);
+				displayNext();
+				return true;
+			} else if (currentlyGrading.requiresStudentID()){
+				grader.setErrorMessage("Student name requires to satisfy student identifier. A name must be chosen");
+				return false;
+			} else if (currentlyGrading.requiresPoints() && points!=ManualGraderGUI.POINTS_NO_RESPONSE){
+				results.provideMCResult(currentlyGrading.getStudentNum(), currentlyGrading.getQuestionNum(), responseNumber);
+				displayNext();
+				return true;
+			} else if (currentlyGrading.requiresPoints()){
+				grader.setErrorMessage("Point value must be assigned for this question.");
+			} else if (currentlyGrading.requiresResponse() && responseNumber == ManualGraderGUI.MULTIPLE_CHOICE_NO_RESPONSE)
+				grader.setErrorMessage("Mulitple choice response must be selected.");
+			else if (currentlyGrading.requiresResponse()){
+				results.provideMCResult(currentlyGrading.getStudentNum(), currentlyGrading.getQuestionNum(), responseNumber);
+				displayNext();
+				return true;
+			}
 			return false;
-		} else if (currentlyGrading.requiresPoints() && points!=ManualGrader.NO_RESPONSE){
-			results.provideMCResult(currentlyGrading.getStudentNum(), currentlyGrading.getQuestionNum(), points);
-			displayNext();
-			return true;
-		} else if (currentlyGrading.requiresPoints()){
-			grader.setErrorMessage("Point value must be assigned for this question.");
-		} else if (currentlyGrading.requiresResponse() && responseNumber == ManualGrader.NO_RESPONSE)
-			grader.setErrorMessage("Mulitple choice response must be selected.");
-		else if (currentlyGrading.requiresResponse()){
-			results.provideMCResult(currentlyGrading.getStudentNum(), currentlyGrading.getQuestionNum(), responseNumber);
-			displayNext();
-			return true;
 		}
 		return false;
 	}
@@ -126,8 +134,6 @@ public class ManualGradeHandler {
 	 */
 	public void notifyAllExceptionsReceived(){
 		allExceptionsReceived = true;
-		for (int i=0; i<10; i++)
-			displayNext();
 	}
 	
 	/**

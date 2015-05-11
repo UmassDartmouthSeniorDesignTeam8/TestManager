@@ -1,7 +1,7 @@
 package testingClasses;
 import htmlGrader.Grader;
 import htmlGrader.ManualGradeHandler;
-import htmlGrader.ManualGrader;
+import htmlGrader.ManualGraderGUI;
 import htmlGrader.Response;
 import htmlGrader.ResultSet;
 
@@ -68,7 +68,6 @@ public class clintdemo {
 		BufferedImage[] array = new BufferedImage[images.size()];
 		images.toArray(array);
 		Grader grader = new Grader(e, responses, new ResultSet(e), array);
-		grader.generateGrades();
-		grader.printChosenAnswers();
+		ResultSet rs  = grader.generateGrades();
 	}
 }

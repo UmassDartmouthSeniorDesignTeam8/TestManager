@@ -57,7 +57,7 @@ public class QRCodeHandler
 	}
 
 
-	public static boolean GenerateQRCode(String imagepath, String contents, int size){
+	public static boolean generateQRCode(String imagepath, String contents, int size){
 		try{
 			QRCodeWriter writer = new QRCodeWriter();
 			BitMatrix image = writer.encode(contents, BarcodeFormat.QR_CODE, size, size);
