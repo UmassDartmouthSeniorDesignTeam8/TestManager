@@ -29,7 +29,13 @@ public class clintdemo {
 		ArrayList<Response> responses = QRStringInterpreter.interpret(images);
 		for (Response r: responses)
 			System.out.println(r);
-		Exam e = FileManager.loadExamFromFile(responses.get(0).getExamID());
+		Exam e;
+		try{
+			e = FileManager.loadExamFromFile(responses.get(0).getExamID());
+		} catch (IndexOutOfBoundsException ex){
+			System.out.println("No QR codes compatible with current software found.");
+			return;
+		}
 		BufferedImage[] array = new BufferedImage[images.size()];
 		images.toArray(array);
 		Grader grader = new Grader(e, responses, new ResultSet(e), array);
