@@ -93,11 +93,25 @@ public class ResultSet {
 		return false;
 	}
 	
+	/**
+	 * Provides the points awarded for a given question. This should only
+	 * be used for open response questions as multiple choice responses
+	 * grade themselves.
+	 * @param student	student number
+	 * @param question	question number
+	 * @param points	number of points to be awarded; accepts all values
+	 * @return
+	 */
 	public boolean providePoints(int student, int question, int points){
 		pointsAwarded[student][question] = points;
 		return true;
 	}
 	
+	/**
+	 * Allows all missing items (questions for which no QR codes were found) to be stored
+	 * in the result set for more helpful error correction later on.
+	 * @param missing	All of the missing items.
+	 */
 	public void provideMissingItems(Queue<MissingItem> missing){
 		this.missing = missing;
 	}
@@ -117,18 +131,33 @@ public class ResultSet {
 		return "Invalid Student #" + student;
 	}
 	
+	/**
+	 * Notifies the result set that there are no more items
+	 * that can be automatically graded.
+	 */
 	public void notifyAllAutomaticGradingComplete(){
 		autoComplete = true;
 	}
 	
+	/**
+	 * Notify the result set that there are no more manually
+	 * graded items to process.
+	 */
 	public void notifyAllManualGradingComplete(){
 		manualComplete = true;
 	}
 	
+	/**
+	 * Returns true id all automatic and manually graded items
+	 * have been processed and the result set has been notified;
+	 * returns false otherwise.
+	 * @return	True if all grading is complete; false otherwise
+	 */
 	public boolean isReady(){
 		return (manualComplete && autoComplete);
 	}
 	
+	// Writes the points CSV to the given file path
 	public void writePointsCSV(String fileName) {
 		PrintWriter output = null;
 
@@ -175,6 +204,7 @@ public class ResultSet {
 		}
 	}
 
+	// Writes all multiple choice answers to the given file path
 	public void writeAnswerCSV(String fileName) {
 
 		PrintWriter output = null;
@@ -223,6 +253,7 @@ public class ResultSet {
 		}
 	}
 	
+	// Prints the results to console
 	public void printResults(){
 		for(int i=0; i<numStudents; i++){
 			System.out.println("Student " + i + ": " + students[i] + ": ");

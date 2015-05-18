@@ -1,4 +1,8 @@
 package htmlGrader;
+/**
+ * This manually graded item is used when student identifier QR codes are
+ * located within an exam. They require a student name String in order to be resolved.
+ */
 
 import examData.OpenResponseQuestion;
 import examData.Question;

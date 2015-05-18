@@ -1,7 +1,12 @@
 package htmlGrader;
 import examData.Question;
 
-
+/**
+ * ManuallyGradedItems are all items that require intervention from the user in order
+ * to assign a multiple choice response/points.
+ * @author Shawn
+ *
+ */
 public abstract class ManuallyGradedItem implements Comparable<ManuallyGradedItem>{
 	private RectangleBoundary boundary;
 	private int student;

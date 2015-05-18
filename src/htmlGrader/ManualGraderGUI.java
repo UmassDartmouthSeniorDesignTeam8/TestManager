@@ -54,28 +54,20 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 		this.handler = handler;
 		this.setLayout(new BorderLayout());
 		
-		//create frame
+		//create frame and starting size
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setExtendedState(MAXIMIZED_BOTH);
 		dim = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);	
 		
+		// add the student name drop down
 		this.studentNames = new JComboBox<String>(studentNames);
 		this.studentNames.setEditable(true);
 		this.studentNames.setSize(100, (int)this.studentNames.getSize().getHeight());
 		
+		// add points for open response questions (not currently used)
 		this.points = new JTextField();
 		points.setSize(100, (int)points.getSize().getHeight());
-		
-		
-		/*//dropdown possibilities
-		String labels[] = { "", "Unknown", "A", "B", "C", "D", "E", "F", "G", "H","I", "J" };
-		
-		//create dropdown
-		responseLetters = new JComboBox<String>(labels);
-	    
-	    //user can't edit
-	    responseLetters.setEditable(false);*/
 	    
 	    //grade button
 	    submit = new JButton("Submit");
@@ -110,7 +102,7 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 	    //set combobox bounds
 	    //btn.setBounds(50, 250, 450, 200);
 	    
-	    //add to frame
+	    //add top menu elements then add to frame
 	    JPanel topmenu = new JPanel(new FlowLayout());
 	    topmenu.add(responseLetters);
 	    topmenu.add(this.studentNames);
@@ -120,7 +112,7 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 	    //this.add(center, BorderLayout.CENTER);
 	    this.add(topmenu, BorderLayout.NORTH);	
 	}
-	
+	 // Used by manual grader to define error messages
 	public void setErrorMessage(String message){
 		warningLabel.setText(message);
 	}
@@ -131,15 +123,18 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 		String studName;
 		int choice;
 		if (ev.getSource() == submit){
+			// get the number of points in the text box
 			try{
 				numPoints = Double.parseDouble(points.getText());
 			} catch (Exception e){
 				numPoints = POINTS_NO_RESPONSE;
 			}
+			// determine if a student name was selected or if it's null
 			if (studentNames==null||studentNames.getSelectedItem()==null)
 				studName = null;
 			else
 				studName = (String)studentNames.getSelectedItem();
+			// Get multiple choice response (none if not applicable)
 			if (!responseLetters.isEnabled())
 				choice = MULTIPLE_CHOICE_NO_RESPONSE;
 			else
@@ -148,7 +143,15 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 			handler.getResponseFromGUI(numPoints, choice, studName);
 		}		
 	}
-	
+	/**
+	 * This updates the manual grader GUI to show a new item
+	 * @param image		Buffered Image to be shown
+	 * @param boundary	RectangleBoundary of the coordinates to highlight
+	 * @param requiresMultipleChoice	True if a multiple choice response is expected, false otherwise
+	 * @param requiresPoints	True if grading an open response question, false otherwise
+	 * @param requiresStudentName	True if student name needs to be input, false otherwise
+	 * @param numChoices	Number of multiple choice selections letters in question (if applicable; ignored otherwise)
+	 */
 	public void displayItem(BufferedImage image, RectangleBoundary boundary, boolean requiresMultipleChoice, boolean requiresPoints,
 			boolean requiresStudentName, int numChoices){
 		drawImage(image, boundary);
@@ -180,6 +183,12 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 		this.setVisible(true);
 	}
 	
+	/**
+	 * This is used to create a localized copy of the buffered image, mark it up
+	 * and display it in the JScrollPane in the middle of the frame.
+	 * @param image		BufferedImage to display
+	 * @param rb	RectangleBoundary defining the coordinates to highlight
+	 */
 	private void drawImage(BufferedImage image, RectangleBoundary rb){
 		// first clone the image so that the original isn't drawn on
 		ColorModel cm = image.getColorModel();
@@ -205,10 +214,12 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 		g.drawRect(topLeftX, topLeftY, bottomRightX-topLeftX, bottomRightY-topLeftY);
 		g.dispose();
 		
+		// Create a scroll pane to house the image
 		JScrollPane image_frame = new JScrollPane(new JLabel(new ImageIcon(localImage)));
 	    image_frame.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 	    image_frame.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 	    image_frame.setPreferredSize(new Dimension(dim.width-50, dim.height-150));
+	    // If this is the first image, create a panel to hold it; otherwise, remove previous image and add new one
 	    if (center==null){
 	    	center = new JPanel(new FlowLayout());
 	    	center.add(image_frame);
@@ -221,6 +232,7 @@ public class ManualGraderGUI extends JFrame implements ActionListener{
 	    }
 	}
 	
+	// Builds the combo box to display given number of choices plus Unknown
 	private void buildChoiceComboBox(int numChoices){
 		responseLetters.removeAllItems();
 		if (numChoices<0)

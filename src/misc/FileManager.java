@@ -1,3 +1,9 @@
+/**
+ * This class encapsulates the saving and loading of frequently used files. The
+ * directory is selected from the PreferencesManager which defaults to a directory of
+ * C:\Orion\
+ */
+
 package misc;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -13,6 +19,12 @@ import examData.Exam;
 
 
 public class FileManager {
+	/**
+	 * Saves an exam file into the exams subdirectory named by the exam ID. If the
+	 * existing exam file already exists, the number will be incremented until an available
+	 * number is found and the exam ID will be updated in the file.
+	 * @param e
+	 */
 	public static void saveExamToFile(Exam e){
 		PreferencesManager.getInstance();
 		int examID;
@@ -26,6 +38,7 @@ public class FileManager {
 		writeObjectToFile(e, file);
 	}
 	
+	// Writes an object of any type to the given file.
 	private static void writeObjectToFile(Object o, File f){
 		FileOutputStream fout;
 		try{
@@ -37,6 +50,7 @@ public class FileManager {
 		}
 	}
 	
+	// Loads an exam that was saved via the saveExamToFile method;  returns null if it doesn't exist
 	public static Exam loadExamFromFile(int examID){
 		try{
 			return (Exam)loadObjectFromFile(new File(PreferencesManager.getFileDirectory()+"\\exams\\"+examID+".oex"));
@@ -47,6 +61,7 @@ public class FileManager {
 		return null;
 	}
 	
+	// Loads a serialized object from a given file
 	private static Object loadObjectFromFile(File f){
 		InputStream file;
 		try {
